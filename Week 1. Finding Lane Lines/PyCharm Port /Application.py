@@ -23,7 +23,6 @@ def process_image(image):
                               hough_parameters.min_line_length, hough_parameters.max_line_gap)
     return utils.weighted_img(lines, image)
 
-
 videos = os.listdir("videos/source")
 for video in videos:
     print('processing' + video)
