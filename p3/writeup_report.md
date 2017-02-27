@@ -95,31 +95,30 @@ This is not a parameter, but worth mentioning. When creating and tuning my netwo
 
 ####4. Training Data 
 
-Getting the right data for this project proved to be one of the biggest challenges. I tried to collect my own data, use the Udacity data set with augmented data, as well as a hybrid of Udacity and collected data. I didn't have a joystick and I was never able to collect enough quality data on my own to get anything that performed satisfactory. So, I ended up using augmented Udacity data. 
-
-More detail about the specific augmentations can be found below.  
+Getting the right data for this project proved to be one of the biggest challenges. I tried to collect my own data, use the Udacity data set with augmented data, and at one point use a hybrid of Udacity and collected data. In the end, I used the Udacity data with augmentations. More detail about the specific augmentations can be found below.  
 
 ###Model Architecture and Training Strategy
 
 ####1. Solution Design Approach
 
+My high level strategy for completing this project was to get it working end to end then iterate until I got the car driving around the track (get it done, get it right, get it good).  I started with the udacity dataset and a simple sequential CNN based in the Keras lab. Once I was able to train a network and get the simulator working in autonomous mode I focused on the data. 
 
+####2. Traing Data & Training Process
+I began by trying to collect my own traing data, but since I didn't have a joystick and I was never able to collect enough quality data on my own to get anything that performed satisfactory. So, I went down the path of using udacity data. 
 
-The overall strategy for deriving a model architecture was to ...
+I attempted to manually omit images that had a high frequency (zero and near zero angles) in an effort to combat over fitting and improve the training data. This approach was utimately replaced by the use of dropout layers, but the depricated code can still be seen in utils.py. 
 
-My first step was to use a convolution neural network model similar to the ... I thought this model might be appropriate because ...
+Next, I focused on the data augmentations, beginning with the right and left camera angles. I added the left and right camera images to my training data, as well as a small negative (right side) and positive (left side) value to the steering angle to compensate for the image position. Many thanks blog posts and confluence threads that covered this topic (participate in the forums!!) 
 
-In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set. I found that my first model had a low mean squared error on the training set but a high mean squared error on the validation set. This implied that the model was overfitting. 
+After I had my left and right images/angles added, I copied each image and applied a random brightness value to that image and added them to the training data. 
 
-To combat the overfitting, I modified the model so that ...
+Finally, I made a copy of each image that had a non zero angle, horizontally flipped it and then multiplied its steering angle by -1. 
 
-Then I ... 
+I experimented with image jittering and shifting, but was never able to improve the experience with these techniques, only slow down my model compilation time. 
 
-The final step was to run the simulator to see how well the car was driving around track one. There were a few spots where the vehicle fell off the track... to improve the driving behavior in these cases, I ....
+All of my augmentations were done on the fly inside of a python generator. At first, I resited the idea of using a generator, but I fell in love with the technique once I implemented it. Resizing, transforming and augmenting data on the fly improved my processing speed by orders of magnitude! Handy libraries like sklearn, mathlab, numpy and cv also helped alleviate the tedious tasks of data wrangling, shuffling training data and processing image data. 
 
-At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
-
-####2. Final Model Architecture
+####3. Final Model Architecture
 
 The final model architecture (model.py lines 18-24) consisted of a convolution neural network with the following layers and layer sizes ...
 
@@ -127,30 +126,4 @@ Here is a visualization of the architecture (note: visualizing the architecture 
 
 ![alt text][image1]
 
-####3. Creation of the Training Set & Training Process
 
-To capture good driving behavior, I first recorded two laps on track one using center lane driving. Here is an example image of center lane driving:
-
-![alt text][image2]
-
-I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to .... These images show what a recovery looks like starting from ... :
-
-![alt text][image3]
-![alt text][image4]
-![alt text][image5]
-
-Then I repeated this process on track two in order to get more data points.
-
-To augment the data sat, I also flipped images and angles thinking that this would ... For example, here is an image that has then been flipped:
-
-![alt text][image6]
-![alt text][image7]
-
-Etc ....
-
-After the collection process, I had X number of data points. I then preprocessed this data by ...
-
-
-I finally randomly shuffled the data set and put Y% of the data into a validation set. 
-
-I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer so that manually training the learning rate wasn't necessary.
