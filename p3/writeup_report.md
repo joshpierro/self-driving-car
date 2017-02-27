@@ -24,7 +24,7 @@ My model.py file contains code that loads training data, defines my convolution 
 
 ####1. Model architecture
 
-My final model was based on the architecture published by the autonmous vehicle team at NVDIA. In the end it turned out that a proven architecture such as this was much better at solving this problem that the architectures that I came up with, and other approaches I tried, specifically the <a href='https://github.com/commaai/research'>Comma AI model</a>. 
+My final model was based on the architecture published by the autonmous vehicle team at NVDIA. In the end it turned out that a proven architecture such as this was much better at solving this problem than the architectures that I came up with, as well as other approaches I tried, specifically the <a href='https://github.com/commaai/research'>Comma AI model</a>. 
 
 It includes a lambda layer that normalizes the data, a Cropping2D layer that masks removes unnecessary parts of an image (i.e. sky,hood), five convolutional layers to filter the data followed by four fully connected layers. The table below provides a quick visual summary. 
 
