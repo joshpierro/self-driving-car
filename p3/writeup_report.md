@@ -74,13 +74,10 @@ None
 The biggest lesson I learned during this exercise is that I need to embrace the Keras framework, as well as time tested approaches to model architecture. For example, the normalization layers and cropping layers included with Keras were far easier to implement and provided a much better result that my home grown solutions. Also, the NVDIA model performed far superior to anything I came up with. 
 
 
+####2. Overfitting approach
+In the end I used four dropout layers, all set to 25%, in my model to prevent overfitting. One after my convolutional layers, and one in between each connected layer. An enormous amount of trial and error performed to find this optimal configuration. 
 
-
-####2. Attempts to reduce overfitting in the model
-
-The model contains dropout layers in order to reduce overfitting (model.py lines 21). 
-
-The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 10-16). The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
+In earlier attempts, I tried to cull out certain percent of images with 0 angles, as well as angles that were close to zero. As I was removing these images randomly, my results were consistently inconsistent. Dropout in the model turned out to be far superior. Again, another case to embrace the framework. 
 
 ####3. Model parameter tuning
 
