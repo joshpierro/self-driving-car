@@ -29,51 +29,6 @@ My model.py file contains code that loads training data, defines my convolution 
 
 My final model was based on the architecture published by the autonmous vehicle team at NVDIA. In the end,  it turned out that this proven architecture was much better at solving the problem than any of the architectures that I came up with, as well as other approaches I tried, specifically the <a href='https://github.com/commaai/research'>Comma AI model</a>. 
 
-The network includes a lambda layer that normalizes the data, a Cropping2D layer that masks removes unnecessary parts of an image (i.e. sky,hood), five convolutional layers to filter the data followed by four fully connected layers. The table below provides a visual summary overview. 
-
-
-<pre>
-Layer (type)                     Output Shape          Param '#     Connected to                     
-====================================================================================================
-lambda_1 (Lambda)                (None, 80, 160, 3)    0           lambda_input_1[0][0]             
-____________________________________________________________________________________________________
-cropping2d_1 (Cropping2D)        (None, 33, 160, 3)    0           lambda_1[0][0]                   
-____________________________________________________________________________________________________
-convolution2d_1 (Convolution2D)  (None, 29, 156, 24)   1824        cropping2d_1[0][0]               
-____________________________________________________________________________________________________
-convolution2d_2 (Convolution2D)  (None, 25, 152, 36)   21636       convolution2d_1[0][0]            
-____________________________________________________________________________________________________
-convolution2d_3 (Convolution2D)  (None, 11, 74, 48)    43248       convolution2d_2[0][0]            
-____________________________________________________________________________________________________
-convolution2d_4 (Convolution2D)  (None, 9, 72, 64)     27712       convolution2d_3[0][0]            
-____________________________________________________________________________________________________
-convolution2d_5 (Convolution2D)  (None, 7, 70, 64)     36928       convolution2d_4[0][0]            
-____________________________________________________________________________________________________
-dropout_1 (Dropout)              (None, 7, 70, 64)     0           convolution2d_5[0][0]            
-____________________________________________________________________________________________________
-flatten_1 (Flatten)              (None, 31360)         0           dropout_1[0][0]                  
-____________________________________________________________________________________________________
-dense_1 (Dense)                  (None, 100)           3136100     flatten_1[0][0]                  
-____________________________________________________________________________________________________
-dropout_2 (Dropout)              (None, 100)           0           dense_1[0][0]                    
-____________________________________________________________________________________________________
-dense_2 (Dense)                  (None, 50)            5050        dropout_2[0][0]                  
-____________________________________________________________________________________________________
-dropout_3 (Dropout)              (None, 50)            0           dense_2[0][0]                    
-____________________________________________________________________________________________________
-dense_3 (Dense)                  (None, 10)            510         dropout_3[0][0]                  
-____________________________________________________________________________________________________
-dropout_4 (Dropout)              (None, 10)            0           dense_3[0][0]                    
-____________________________________________________________________________________________________
-dense_4 (Dense)                  (None, 1)             11          dropout_4[0][0]                  
-====================================================================================================
-Total params: 3,273,019
-Trainable params: 3,273,019
-Non-trainable params: 0
-____________________________________________________________________________________________________
-None
-</pre>
-
 The biggest takeway I got from this exercise is to <strong>embrace the Keras framework</strong>, as well as time tested approaches to model architecture. For example, the normalization layers and cropping layers included with Keras were far easier to implement and provided a much better result that my home grown solutions. Also, the NVDIA model performed far superior to anything I came up with. 
 
 
@@ -120,10 +75,47 @@ All of my augmentations were done on the fly inside of a python generator. At fi
 
 ####3. Final Model Architecture
 
-The final model architecture (model.py lines 18-24) consisted of a convolution neural network with the following layers and layer sizes ...
+Again, my final architecture was based on the proven NVDIA architecture. It includes a lambda layer that normalizes the data, a Cropping2D layer that masks removes unnecessary parts of an image (i.e. sky,hood), five convolutional layers to filter the data followed by four fully connected layers. The table below provides a visual summary overview. 
 
-Here is a visualization of the architecture (note: visualizing the architecture is optional according to the project rubric)
-
-![alt text][image1]
-
+<pre>
+Layer (type)                     Output Shape          Param '#     Connected to                     
+====================================================================================================
+lambda_1 (Lambda)                (None, 80, 160, 3)    0           lambda_input_1[0][0]             
+____________________________________________________________________________________________________
+cropping2d_1 (Cropping2D)        (None, 33, 160, 3)    0           lambda_1[0][0]                   
+____________________________________________________________________________________________________
+convolution2d_1 (Convolution2D)  (None, 29, 156, 24)   1824        cropping2d_1[0][0]               
+____________________________________________________________________________________________________
+convolution2d_2 (Convolution2D)  (None, 25, 152, 36)   21636       convolution2d_1[0][0]            
+____________________________________________________________________________________________________
+convolution2d_3 (Convolution2D)  (None, 11, 74, 48)    43248       convolution2d_2[0][0]            
+____________________________________________________________________________________________________
+convolution2d_4 (Convolution2D)  (None, 9, 72, 64)     27712       convolution2d_3[0][0]            
+____________________________________________________________________________________________________
+convolution2d_5 (Convolution2D)  (None, 7, 70, 64)     36928       convolution2d_4[0][0]            
+____________________________________________________________________________________________________
+dropout_1 (Dropout)              (None, 7, 70, 64)     0           convolution2d_5[0][0]            
+____________________________________________________________________________________________________
+flatten_1 (Flatten)              (None, 31360)         0           dropout_1[0][0]                  
+____________________________________________________________________________________________________
+dense_1 (Dense)                  (None, 100)           3136100     flatten_1[0][0]                  
+____________________________________________________________________________________________________
+dropout_2 (Dropout)              (None, 100)           0           dense_1[0][0]                    
+____________________________________________________________________________________________________
+dense_2 (Dense)                  (None, 50)            5050        dropout_2[0][0]                  
+____________________________________________________________________________________________________
+dropout_3 (Dropout)              (None, 50)            0           dense_2[0][0]                    
+____________________________________________________________________________________________________
+dense_3 (Dense)                  (None, 10)            510         dropout_3[0][0]                  
+____________________________________________________________________________________________________
+dropout_4 (Dropout)              (None, 10)            0           dense_3[0][0]                    
+____________________________________________________________________________________________________
+dense_4 (Dense)                  (None, 1)             11          dropout_4[0][0]                  
+====================================================================================================
+Total params: 3,273,019
+Trainable params: 3,273,019
+Non-trainable params: 0
+____________________________________________________________________________________________________
+None
+</pre>
 
