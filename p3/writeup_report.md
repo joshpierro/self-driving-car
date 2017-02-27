@@ -15,14 +15,14 @@ This repo contains my submission for the <strong> Behavioral Cloning </strong> p
 ```sh
 python drive.py
 ```
-####3. Model/Pipeline -Utils 
+####3. Model/Pipeline - Utils functions
 
-My model.py file contains code that loads training data, defines my convolution neural network, trains and validates the network and saves it. I use a utils class to delegate much of the logic that is used to load and transform data. 
+My model.py file contains code that loads training data, defines my convolution neural network, trains and validates the network and saves it. I used methods in a utils script to delegate much of the logic used to load and transform data. 
 
 
 ###Model Architecture and Training Strategy
 
-####1. Model architecture
+####1. Model Architecture
 
 My final model was based on the architecture published by the autonmous vehicle team at NVDIA. In the end it turned out that a proven architecture such as this was much better at solving this problem than the architectures that I came up with, as well as other approaches I tried, specifically the <a href='https://github.com/commaai/research'>Comma AI model</a>. 
 
@@ -74,14 +74,14 @@ None
 The biggest lesson I learned during this exercise is that I need to embrace the Keras framework, as well as time tested approaches to model architecture. For example, the normalization layers and cropping layers included with Keras were far easier to implement and provided a much better result that my home grown solutions. Also, the NVDIA model performed far superior to anything I came up with. 
 
 
-####2. Overfitting approach
+####2. Overfitting Approach
 In the end I used four dropout layers, all set to 25%, in my model to prevent overfitting. One after my convolutional layers, and one in between each connected layer. An enormous amount of trial and error performed to find this optimal configuration. 
 
 In earlier attempts, I tried to cull out certain percent of images with 0 angles, as well as angles that were close to zero. As I was removing these images randomly, my results were consistently inconsistent. Dropout in the model turned out to be far superior. Again, another case to embrace the framework. 
 
-####3. Model parameter tuning
+####3. Hyperparameters/Tuning
 
-The model used an adam optimizer, so the learning rate was not tuned manually (model.py line 25).
+As a result of lack of data, bad data and poor model architecture, I spent quite a bit of time fine tuning my model's hyper parameters. My model used the adam optimizer,with a learning rate of .0001.
 
 ####4. Appropriate training data
 
