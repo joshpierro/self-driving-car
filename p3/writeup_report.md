@@ -15,18 +15,21 @@ This repo contains my submission for the <strong> Behavioral Cloning </strong> p
 ```sh
 python drive.py
 ```
+I did my work in a pycharm project, so that can be used to launch the drive.py script as well. 
+
+
 ####3. Model/Pipeline - Utils functions
 
-My model.py file contains code that loads training data, defines my convolution neural network, trains and validates the network and saves it. I used methods in a utils script to delegate much of the logic used to load and transform data. 
+My model.py file contains code that loads training data, defines my convolution neural network, trains and validates the network and saves it. Methods in the utils.py script were used to delegate much of the logic for loading and transforming data. 
 
 
 ###Model Architecture and Training Strategy
 
 ####1. Model Architecture
 
-My final model was based on the architecture published by the autonmous vehicle team at NVDIA. In the end it turned out that a proven architecture such as this was much better at solving this problem than the architectures that I came up with, as well as other approaches I tried, specifically the <a href='https://github.com/commaai/research'>Comma AI model</a>. 
+My final model was based on the architecture published by the autonmous vehicle team at NVDIA. In the end,  it turned out that this proven architecture was much better at solving the problem than any of the architectures that I came up with, as well as other approaches I tried, specifically the <a href='https://github.com/commaai/research'>Comma AI model</a>. 
 
-It includes a lambda layer that normalizes the data, a Cropping2D layer that masks removes unnecessary parts of an image (i.e. sky,hood), five convolutional layers to filter the data followed by four fully connected layers. The table below provides a quick visual summary. 
+The network includes a lambda layer that normalizes the data, a Cropping2D layer that masks removes unnecessary parts of an image (i.e. sky,hood), five convolutional layers to filter the data followed by four fully connected layers. The table below provides a visual summary overview. 
 
 
 <pre>
@@ -71,7 +74,7 @@ ________________________________________________________________________________
 None
 </pre>
 
-The biggest lesson I learned during this exercise is that I need to embrace the Keras framework, as well as time tested approaches to model architecture. For example, the normalization layers and cropping layers included with Keras were far easier to implement and provided a much better result that my home grown solutions. Also, the NVDIA model performed far superior to anything I came up with. 
+The biggest takeway I got from this exercise is to <strong>embrace the Keras framework</strong>, as well as time tested approaches to model architecture. For example, the normalization layers and cropping layers included with Keras were far easier to implement and provided a much better result that my home grown solutions. Also, the NVDIA model performed far superior to anything I came up with. 
 
 
 ####2. Overfitting Approach
@@ -81,17 +84,26 @@ In earlier attempts, I tried to cull out certain percent of images with 0 angles
 
 ####3. Hyperparameters/Tuning
 
-As a result of lack of data, bad data and poor model architecture, I spent quite a bit of time fine tuning my model's hyper parameters. My model used the adam optimizer,with a learning rate of .0001.
+As a result of lack of data, bad data and poor model architecture, I spent quite a bit of time fine tuning my model's hyper parameters. The following paramters allowed me to get the car around the track:
 
-####4. Appropriate training data
+* Adam optimizer,with a learning rate of .0001.
+* Mean Squared error loss
+* a batch size of 100 
+* 7 Epochs 
 
-Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road ... 
+This is not a parameter, but worth mentioning. When creating and tuning my network architecture, I reduced my image sizes by 4x. This helped me iterate faster and give me a general idea how the model would do when larger images were used. I was able to get the car around the track with 1/2 sized images.   
 
-For details about how I created the training data, see the next section. 
+####4. Training Data 
+
+Getting the right data for this project proved to be one of the biggest challenges. I tried to collect my own data, use the Udacity data set with augmented data, as well as a hybrid of Udacity and collected data. I didn't have a joystick and I was never able to collect enough quality data on my own to get anything that performed satisfactory. So, I ended up using augmented Udacity data. 
+
+More detail about the specific augmentations can be found below.  
 
 ###Model Architecture and Training Strategy
 
 ####1. Solution Design Approach
+
+
 
 The overall strategy for deriving a model architecture was to ...
 
