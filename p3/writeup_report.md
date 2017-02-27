@@ -19,13 +19,58 @@ python drive.py
 
 My model.py file contains code that loads training data, defines my convolution neural network, trains and validates the network and saves it. 
 
+
 ###Model Architecture and Training Strategy
 
-####1. An appropriate model architecture has been employed
+####1. Model architecture
 
-My model consists of a convolution neural network with 3x3 filter sizes and depths between 32 and 128 (model.py lines 18-24) 
 
-The model includes RELU layers to introduce nonlinearity (code line 20), and the data is normalized in the model using a Keras lambda layer (code line 18). 
+My final model was based on the architecture published by the autonmous vehicle team at NVDIA. In the end it turned out that a proven architecture such as this was much better at solving this problem that the architectures that I came up with, and other approaches I tried, specifically the <a href='https://github.com/commaai/research'>Comma AI model</a>. 
+
+It includes a lambda layer that normalizes the data, a Cropping2D layer that masks removes unnecessary parts of an image (i.e. sky,hood), five convolutional layers to filter the data followed by four fully connected layers.  
+
+'''
+Layer (type)                     Output Shape          Param #     Connected to                     
+====================================================================================================
+lambda_1 (Lambda)                (None, 80, 160, 3)    0           lambda_input_1[0][0]             
+____________________________________________________________________________________________________
+cropping2d_1 (Cropping2D)        (None, 33, 160, 3)    0           lambda_1[0][0]                   
+____________________________________________________________________________________________________
+convolution2d_1 (Convolution2D)  (None, 29, 156, 24)   1824        cropping2d_1[0][0]               
+____________________________________________________________________________________________________
+convolution2d_2 (Convolution2D)  (None, 25, 152, 36)   21636       convolution2d_1[0][0]            
+____________________________________________________________________________________________________
+convolution2d_3 (Convolution2D)  (None, 11, 74, 48)    43248       convolution2d_2[0][0]            
+____________________________________________________________________________________________________
+convolution2d_4 (Convolution2D)  (None, 9, 72, 64)     27712       convolution2d_3[0][0]            
+____________________________________________________________________________________________________
+convolution2d_5 (Convolution2D)  (None, 7, 70, 64)     36928       convolution2d_4[0][0]            
+____________________________________________________________________________________________________
+dropout_1 (Dropout)              (None, 7, 70, 64)     0           convolution2d_5[0][0]            
+____________________________________________________________________________________________________
+flatten_1 (Flatten)              (None, 31360)         0           dropout_1[0][0]                  
+____________________________________________________________________________________________________
+dense_1 (Dense)                  (None, 100)           3136100     flatten_1[0][0]                  
+____________________________________________________________________________________________________
+dropout_2 (Dropout)              (None, 100)           0           dense_1[0][0]                    
+____________________________________________________________________________________________________
+dense_2 (Dense)                  (None, 50)            5050        dropout_2[0][0]                  
+____________________________________________________________________________________________________
+dropout_3 (Dropout)              (None, 50)            0           dense_2[0][0]                    
+____________________________________________________________________________________________________
+dense_3 (Dense)                  (None, 10)            510         dropout_3[0][0]                  
+____________________________________________________________________________________________________
+dropout_4 (Dropout)              (None, 10)            0           dense_3[0][0]                    
+____________________________________________________________________________________________________
+dense_4 (Dense)                  (None, 1)             11          dropout_4[0][0]                  
+====================================================================================================
+Total params: 3,273,019
+Trainable params: 3,273,019
+Non-trainable params: 0
+____________________________________________________________________________________________________
+None
+
+''' 
 
 ####2. Attempts to reduce overfitting in the model
 
