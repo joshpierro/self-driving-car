@@ -1,8 +1,8 @@
 #**Behavioral Cloning** 
 
-This repo contains my submission for the <strong> Behavioral Cloning </strong> project. The outline below describes its components. 
+This repo contains my submission for the <strong> Behavioral Cloning </strong> project. This readme describes its components, model architecture, training approach and other findings. 
 
-####1. The following critical files have been included:
+####1. The following critical files have been included in this project:
 
 * model.py 
 * utils.py 
@@ -15,22 +15,22 @@ This repo contains my submission for the <strong> Behavioral Cloning </strong> p
 ```sh
 python drive.py
 ```
-####3. Model/Pipeline 
+####3. Model/Pipeline -Utils 
 
-My model.py file contains code that loads training data, defines my convolution neural network, trains and validates the network and saves it. 
+My model.py file contains code that loads training data, defines my convolution neural network, trains and validates the network and saves it. I use a utils class to delegate much of the logic that is used to load and transform data. 
 
 
 ###Model Architecture and Training Strategy
 
 ####1. Model architecture
 
-
 My final model was based on the architecture published by the autonmous vehicle team at NVDIA. In the end it turned out that a proven architecture such as this was much better at solving this problem that the architectures that I came up with, and other approaches I tried, specifically the <a href='https://github.com/commaai/research'>Comma AI model</a>. 
 
-It includes a lambda layer that normalizes the data, a Cropping2D layer that masks removes unnecessary parts of an image (i.e. sky,hood), five convolutional layers to filter the data followed by four fully connected layers.  
+It includes a lambda layer that normalizes the data, a Cropping2D layer that masks removes unnecessary parts of an image (i.e. sky,hood), five convolutional layers to filter the data followed by four fully connected layers. The table below provides a quick visual summary. 
 
-'''
-Layer (type)                     Output Shape          Param #     Connected to                     
+
+<pre>
+Layer (type)                     Output Shape          Param '#     Connected to                     
 ====================================================================================================
 lambda_1 (Lambda)                (None, 80, 160, 3)    0           lambda_input_1[0][0]             
 ____________________________________________________________________________________________________
@@ -69,8 +69,12 @@ Trainable params: 3,273,019
 Non-trainable params: 0
 ____________________________________________________________________________________________________
 None
+</pre>
 
-''' 
+The biggest lesson I learned during this exercise is that I need to embrace the Keras framework, as well as time tested approaches to model architecture. For example, the normalization layers and cropping layers included with Keras were far easier to implement and provided a much better result that my home grown solutions. Also, the NVDIA model performed far superior to anything I came up with. 
+
+
+
 
 ####2. Attempts to reduce overfitting in the model
 
