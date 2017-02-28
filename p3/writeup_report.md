@@ -15,7 +15,7 @@ This repo contains my submission for the <strong> Behavioral Cloning </strong> p
 ```sh
 python drive.py
 ```
-I did my work in a pycharm project, so that can be used to launch the drive.py script as well. 
+I did my work in the pycharm IDE, so pycharm can be used to launch the drive.py script as well. Simply pull the repo, open the simulator in autonomous mode and execute drive.py. 
 
 
 ####3. Model/Pipeline - Utils functions
@@ -61,7 +61,7 @@ My high level strategy for completing this project was to get it working end to 
 ####2. Traing Data & Training Process
 I began by trying to collect my own traing data, but since I didn't have a joystick and I was never able to collect enough quality data on my own to get anything that performed satisfactory. So, I went down the path of using udacity data. 
 
-I attempted to manually omit images that had a high frequency (zero and near zero angles) in an effort to combat over fitting and improve the training data. This approach was utimately replaced by the use of dropout layers, but the depricated code can still be seen in utils.py. 
+At first, I attempted to manually omit images that had a high frequency (zero and near zero angles) in an effort to combat over fitting and improve the training data. This approach was utimately replaced by the use of dropout layers, but the depricated code can still be seen in utils.py. 
 
 Next, I focused on the data augmentations, beginning with the right and left camera angles. I added the left and right camera images to my training data, as well as a small negative (right side) and positive (left side) value to the steering angle to compensate for the image position. Many thanks blog posts and confluence threads that covered this topic (participate in the forums!!) 
 
@@ -71,11 +71,13 @@ Finally, I made a copy of each image that had a non zero angle, horizontally fli
 
 I experimented with image jittering and shifting, but was never able to improve the experience with these techniques, only slow down my model compilation time. 
 
-All of my augmentations were done on the fly inside of a python generator. At first, I resited the idea of using a generator, but I fell in love with the technique once I implemented it. Resizing, transforming and augmenting data on the fly improved my processing speed by orders of magnitude! Handy libraries like sklearn, mathlab, numpy and cv also helped alleviate the tedious tasks of data wrangling, shuffling training data and processing image data. 
+All of my augmentations were done on the fly inside of a python generator. At first, I resited the idea of using a generator, but I fell in love with the technique once I implemented it. Resizing, transforming and augmenting data on the fly improved my processing speed by orders of magnitude! Handy libraries like sklearn, mathlab, numpy and cv also helped alleviate the tedious tasks of data wrangling, shuffling training data and processing image data. The mathlab plotting functions were also useful for visualizing MSE loss in training and validation data. 
 
 ####3. Final Model Architecture
 
-Again, my final architecture was based on the proven NVDIA architecture. It includes a lambda layer that normalizes the data, a Cropping2D layer that masks removes unnecessary parts of an image (i.e. sky,hood), five convolutional layers to filter the data followed by four fully connected layers. The table below provides a visual summary overview. 
+Again, my final architecture was based on the proven NVDIA architecture. And, a proper architecture proved to be more important than anything else. I started off with an architecture of my own design and experimented with the comma AI architecture. Once I implemented NVDIA however, my car was able to drive farther than ever, even with a minimal amount of training data! 
+
+The final architecture includes a lambda layer that normalizes the data, a Cropping2D layer that masks removes unnecessary parts of an image (i.e. sky,hood), five convolutional layers to filter the data followed by four fully connected layers. The table below provides a visual summary overview. 
 
 <pre>
 Layer (type)                     Output Shape          Param '#     Connected to                     
