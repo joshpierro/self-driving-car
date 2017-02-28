@@ -44,7 +44,7 @@ As a result of lack of data, bad data and poor model architecture, I spent quite
 * Adam optimizer,with a learning rate of .0001.
 * Mean Squared error loss
 * a batch size of 100 
-* 7 Epochs 
+* 8 Epochs 
 
 This is not a parameter, but worth mentioning. When creating and tuning my network architecture, I reduced my image sizes by 4x. This helped me iterate faster and give me a general idea how the model would do when larger images were used. I was able to get the car around the track with 1/2 sized images.   
 
@@ -63,7 +63,7 @@ I began by trying to collect my own training data, but since I didn't have a joy
 
 At first, I attempted to manually omit images that had a high frequency (zero and near zero angles) in an effort to combat over fitting and improve the training data. This approach was ultimately replaced by the use of dropout layers, but the deprecated code can still be seen in utils.py. 
 
-Next, I focused on the data augmentations, beginning with the right and left camera angles. I added the left and right camera images to my training data, as well as a small negative (right side) and positive (left side) value to the steering angle to compensate for the image position. Many thanks blog posts and confluence threads that covered this topic (participate in the forums!!) 
+Next, I focused on the data augmentations, beginning with the right and left camera angles. I added the left and right camera images to my training data, as well as a small negative ( -.28, right side) and positive ( + .28, left side) value to the steering angle to compensate for the image position. Many thanks blog posts and confluence threads that covered this topic (participate in the forums!!) 
 
 After I had my left and right images/angles added, I copied each image and applied a random brightness value to that image and added them to the training data. 
 
