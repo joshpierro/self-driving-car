@@ -1,14 +1,20 @@
 #**Behavioral Cloning** 
 
-This repo contains my submission for the <strong> Behavioral Cloning </strong> project. This readme describes its components, model architecture, training approach and other findings. 
+This repo contains my submission for the <strong> Behavioral Cloning </strong> project, and this readme describes its components, model architecture, training approach and other findings. 
 
-####1. The following critical files have been included in this project:
+A video of my car making a lap in autonomous mode was also included in the project. I initially tried to use a couple of desktop screen recorders (RecordMyDesktop and SimpleScreenRecorder) to record my runs, but their memory usage interfered with the simulator on my system. As a result, I generated images from the drive.py script and created a video with the video.py script. Its quality is not as nice as I would have liked. 
+
+<img src="https://github.com/joshpierro/self-driving-car/blob/master/p3/examples/video.png" width="183" height="150" />
+
+
+####1. The following critical files of interest have been included in this project:
 
 * model.py 
 * utils.py 
 * drive.py 
 * model.h5
 * writeup_report.md 
+* video.mp4 
 
 ####2. The simulator can be run in autonomous mode by executing the following script (with no arguments) 
 
