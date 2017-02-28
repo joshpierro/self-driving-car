@@ -74,6 +74,8 @@ I experimented with image jittering and shifting, but was never able to improve 
 All of my augmentations were done on the fly inside of a python generator. At first, I resisted the idea of using a generator, but I fell in love with the technique once I implemented it. Resizing, transforming and augmenting data on the fly improved my processing speed by orders of magnitude! 
 
 Handy libraries like sklearn, mathlab, numpy and cv also helped alleviate the tedious tasks of data wrangling, shuffling training data and processing image data. The mathlab plotting functions were used to visualizing MSE loss in training and validation data. While interesting, the only true predictor was running the model through the simulator. 
+<img src="https://github.com/joshpierro/self-driving-car/blob/master/p3/examples/mse.png" width="400" height="300" />
+
 
 ####3. Final Model Architecture
 
