@@ -1,3 +1,4 @@
+import utils
 import argparse
 import base64
 from datetime import datetime
@@ -6,7 +7,6 @@ import shutil
 
 import numpy as np
 import socketio
-import eventlet
 import eventlet.wsgi
 from PIL import Image
 from flask import Flask
@@ -33,31 +33,23 @@ def telemetry(sid, data):
         # The current image from the center camera of the car
         imgString = data["image"]
         image = Image.open(BytesIO(base64.b64decode(imgString)))
-        image.save('/Users/pierroj/josh/sdc/p3/image.jpg')
+        image.save('/home/pierro/Work/udacity/SDC/p3/image.jpg')
 
-        #image_array = np.asarray(image)
-        #print('orig steering',steering_angle)
-
-        #this is a hack
-        image_path  = '/Users/pierroj/josh/sdc/p3/image.jpg'
+        #this is a hack - TODO: clean up
+        image_path  = '/home/pierro/Work/udacity/SDC/p3/image.jpg'
         image = mpimg.imread(image_path)
+
+        #resize
+        image = utils.resize_image(image)
 
         x = []
         x.append(image)
         x = np.array(x)
 
+        #predict
         predict = model.predict(x, batch_size=1, verbose=1)
-       # prob = np.argmax(predict, axis=1)
-       # print("--------")
-       # print(predict)
-       # print('*************')
-       # print(prob)
-        #print("--------")
-       # print(float(predict.item((prob[0]))))
-        #steering_angle = float(predict.item((prob[0])))
 
-        best_guess = np.argmax(predict)
-        steering_angle = float(predict.item(best_guess)) *.001
+        steering_angle = float(predict.item(0))
         throttle = 0.2
         print(steering_angle, throttle)
         send_control(steering_angle, throttle)
@@ -107,7 +99,8 @@ if __name__ == '__main__':
 
 
     args = parser.parse_args()
-    model = load_model('/Users/pierroj/josh/sdc/p3/model.h5')
+    model = load_model('/home/pierro/Work/udacity/SDC/p3/model.h5')
+    #model = load_model('/home/pierro/Work/udacity/SDC/p3/checkpoints/model07.h5') #6
 
     if args.image_folder != '':
         print("Creating image folder at {}".format(args.image_folder))
