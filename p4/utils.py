@@ -11,11 +11,14 @@ CALIBRATION_IMAGES = glob.glob('camera_cal/calibration*.jpg')
 THRESH_MIN = 20
 THRESH_MAX = 100
 
-bin_256 = 256
-hist_range_min = 0
-hist_range_max = 256
-masked_array_min = 0
-masked_array_max = 255
+BIN_256 = 256
+HIST_RANGE_MIN = 0
+HIST_RANGE_MAX = 256
+MASKED_ARRAY_MIN = 0
+MASKED_ARRAY_MAX = 255
+
+YM_PER_PX = 30 / 720
+XM_PER_PX = 3.7 / 700
 
 #calibrate camera
 def calibrate_camera ():
@@ -85,37 +88,37 @@ def increase_contrast(image):
     """this function increases the contrast of the BW image
     """
     equ = cv.equalizeHist(image)
-    hist, bins = np.histogram(equ.flatten(), bin_256, [hist_range_min, hist_range_max])
+    hist, bins = np.histogram(equ.flatten(), BIN_256, [HIST_RANGE_MIN, HIST_RANGE_MAX])
     cdf = hist.cumsum()
-    cdf_m = np.ma.masked_equal(cdf, masked_array_min)
-    cdf_m = (cdf_m - cdf_m.min()) * masked_array_max / (cdf_m.max() - cdf_m.min())
-    cdf = np.ma.filled(cdf_m, masked_array_min).astype('uint8')
+    cdf_m = np.ma.masked_equal(cdf, MASKED_ARRAY_MIN)
+    cdf_m = (cdf_m - cdf_m.min()) * MASKED_ARRAY_MAX / (cdf_m.max() - cdf_m.min())
+    cdf = np.ma.filled(cdf_m, MASKED_ARRAY_MIN).astype('uint8')
     histogram = cdf[image]
     return cv.equalizeHist(histogram)
 
+
 #get threshold
 def get_threshold(image):
-    # thresh_min = 20
-    # thresh_max = 100
-    # gray = cv.cvtColor(image, cv.COLOR_RGB2GRAY)
-    # sobelx = cv.Sobel(gray, cv.CV_64F, 1, 0)
-    # abs_sobelx = np.absolute(sobelx)
-    # scaled_sobel = np.uint8(255 * abs_sobelx / np.max(abs_sobelx))
-    # sxbinary = np.zeros_like(scaled_sobel)
-    # sxbinary[(scaled_sobel >= thresh_min) & (scaled_sobel <= thresh_max)] = 1
-    # return sxbinary
-
     hls = cv.cvtColor(image.astype(np.uint8), cv.COLOR_RGB2HLS)
     gray = cv.cvtColor(image, cv.COLOR_RGB2GRAY)
     gray = increase_contrast(gray)
     s = hls[:, :, 2]
-
     x, gray_threshold = cv.threshold(gray.astype('uint8'), 75, 255, cv.THRESH_BINARY)
     x, s_threshold = cv.threshold(s.astype('uint8'), 75, 255, cv.THRESH_BINARY)
-
     combined_binary = np.clip(cv.bitwise_and(gray_threshold, s_threshold), 0, 1).astype('uint8')
-
     return combined_binary
+
+
+# thresh_min = 20
+# thresh_max = 100
+# gray = cv.cvtColor(image, cv.COLOR_RGB2GRAY)
+# sobelx = cv.Sobel(gray, cv.CV_64F, 1, 0)
+# abs_sobelx = np.absolute(sobelx)
+# scaled_sobel = np.uint8(255 * abs_sobelx / np.max(abs_sobelx))
+# sxbinary = np.zeros_like(scaled_sobel)
+# sxbinary[(scaled_sobel >= thresh_min) & (scaled_sobel <= thresh_max)] = 1
+# return sxbinary
+
 
 #
 def source():
@@ -137,8 +140,20 @@ def destination():
     return src
 
 
+#calculate curves
+def calculate_curves(leftx,lefty,rightx,righty):
+    left_fit_cr = np.polyfit(lefty * YM_PER_PX, leftx * XM_PER_PX, 2)
+    right_fit_cr = np.polyfit(righty * YM_PER_PX, rightx * XM_PER_PX, 2)
 
+    left_curverad = ((1 + (2 * left_fit_cr[0] * np.max(lefty) + left_fit_cr[1]) ** 2) ** 1.5) / np.absolute(2 * left_fit_cr[0])
+    right_curverad = ((1 + (2 * right_fit_cr[0] * np.max(lefty) + right_fit_cr[1]) ** 2) ** 1.5) / np.absolute(2 * right_fit_cr[0])
+    return left_curverad,right_curverad
 
+def get_center_calc(video,left_fitx,right_fitx):
+    veh_pos = video.shape[1] / 2
+    middle = (left_fitx[-1] + right_fitx[-1]) // 2
+    center_calc = (veh_pos - middle) * XM_PER_PX
+    return center_calc
 
 # combined_binarydef get_warped_perspective(img, reverse_persp=False):
 #

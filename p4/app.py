@@ -86,31 +86,20 @@ def pipeline(video):
     except:
         return Lanes.cached_result
 
-
     ploty = np.linspace(0, threshold.shape[0]-1, threshold.shape[0] )
     left_fitx = left_fit[0]*ploty**2 + left_fit[1]*ploty + left_fit[2]
     right_fitx = right_fit[0]*ploty**2 + right_fit[1]*ploty + right_fit[2]
 
 
-    out_img[nonzeroy[left_lane_inds], nonzerox[left_lane_inds]] = [255, 0, 0]
-    out_img[nonzeroy[right_lane_inds], nonzerox[right_lane_inds]] = [0, 0, 255]
-
+    # out_img[nonzeroy[left_lane_inds], nonzerox[left_lane_inds]] = [255, 0, 0]
+    # out_img[nonzeroy[right_lane_inds], nonzerox[right_lane_inds]] = [0, 0, 255]
+    #
 
     ####
     # calculate curves and centerline
-    ym_per_pix = 30 / 720
-    xm_per_pix = 3.7 / 700
+    left_curverad, right_curverad =  utils.calculate_curves(leftx, lefty, rightx, righty)
+    center_calc = utils.get_center_calc(video,left_fitx,right_fitx)
 
-    left_fit_cr = np.polyfit(lefty * ym_per_pix, leftx * xm_per_pix, 2)
-    right_fit_cr = np.polyfit(righty * ym_per_pix, rightx * xm_per_pix, 2)
-
-    left_curverad = ((1 + (2 * left_fit_cr[0] * np.max(lefty) + left_fit_cr[1]) ** 2) ** 1.5) / np.absolute(
-        2 * left_fit_cr[0])
-    right_curverad = ((1 + (2 * right_fit_cr[0] * np.max(lefty) + right_fit_cr[1]) ** 2) ** 1.5)  / np.absolute(2 * right_fit_cr[0])
-
-    veh_pos = video.shape[1] / 2
-    middle = (left_fitx[-1] + right_fitx[-1]) // 2
-    center_calc = (veh_pos - middle) * xm_per_pix
 
     ###
     warp_zero = np.zeros_like(threshold).astype(np.uint8)
@@ -143,12 +132,30 @@ def pipeline(video):
 cam_mtx, cam_dist = utils.calibrate_camera()
 
 #process video
-video_path = 'project_video.mp4'
-video_output = 'project_result.mp4'
-output = VideoFileClip(video_path)
-input = output.fl_image(pipeline)
-input.write_videofile(video_output, audio=False)
+# video_path = 'project_video.mp4'
+# video_output = 'project_result.mp4'
+# output = VideoFileClip(video_path)
+# input = output.fl_image(pipeline)
+# input.write_videofile(video_output, audio=False)
 
+
+#rubric point 1
+# image = cv.imread('camera_cal/calibration1.jpg')
+# undist = cv.undistort(image, cam_mtx, cam_dist, None, cam_mtx)
+#
+# plt.figure(figsize=(10,5))
+# plt.subplot(1, 2, 1)
+# plt.imshow(image)
+# plt.xlabel('Original Image')
+# plt.xticks([], [])
+# plt.yticks([], [])
+#
+# plt.subplot(1, 2, 2)
+# plt.imshow(undist)
+# plt.xlabel('Undistorted Image')
+# plt.xticks([], [])
+# plt.yticks([], [])
+# plt.show(block=True)
 
 
 # plt.subplot(1, 2, 2)
@@ -196,19 +203,6 @@ input.write_videofile(video_output, audio=False)
 # plt.xlabel('warped Image')
 # plt.show(block=True)
 
-# plt.figure(figsize=(10,5))
-# plt.subplot(1, 2, 1)
-# plt.imshow(image)
-# plt.xlabel('Original Image')
-# plt.xticks([], [])
-# plt.yticks([], [])
-#
-# plt.subplot(1, 2, 2)
-# plt.imshow(undist)
-# plt.xlabel('Undistorted Image')
-# plt.xticks([], [])
-# plt.yticks([], [])
-# plt.show(block=True)
 
 # plt.figure(figsize=(10,5))
 # plt.subplot(1, 2, 1)
@@ -227,7 +221,7 @@ input.write_videofile(video_output, audio=False)
 # plt.imshow(undist)
 # plt.xlabel('Undistorted Image')
 
-#
+
 # plt.subplot(1, 2, 2)
 # plt.imshow(threshold, cmap='gray')
 # plt.xlabel('Threshold Image')
