@@ -4,15 +4,6 @@ This repo contains my submission for the <strong>Advanced Lane Finding</strong> 
 
 My app.py file contains all of the code that defines and execute my pipeline. Methods in the utils.py script were used to delegate much of the logic used to process the images.
 
-point1.png	add calibration image for write up	6 hours ago
-point2.png	add image for undistorted image	6 hours ago
-point3.png	add images for birdseye view	5 hours ago
-point4.png	add threshold image	4 hours ago
-point5.png	add histogram and sliding window images	4 hours ago
-point5_1.png	add histogram and sliding window images	4 hours ago
-point6.png	add screenshot and video for final output	an hour ago
-save_output_here.txt
-
 [//]: # (Image References)
 [point1]: ./output_images/point1.png "Camera Calibration/Undistorted Imagwe"
 [point2]: ./output_images/point2.png "Undistorted Image"
