@@ -96,7 +96,14 @@ Once the left and right laneline pixels have been extracted, a second order poly
 
 ####5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
-I did this in lines # through # in my code in `my_other_file.py`
+The curvature of the lane lines were calculated with the algorithm provided in the class material. It plots a second order polynomial to pixel positions for each lane line, then calculating the radius. my implementation can be found on line 101 of app.py, with the details of the implementation found on lines 144-150 of utils.py.
+
+Both operations used the following assumptions to convert pixels to meters:
+<pre>
+YM_PER_PX = 30 / 720<br>
+XM_PER_PX = 3.7 / 700
+</pre>
+
 
 ####6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
