@@ -11,6 +11,12 @@ CALIBRATION_IMAGES = glob.glob('camera_cal/calibration*.jpg')
 THRESH_MIN = 20
 THRESH_MAX = 100
 
+bin_256 = 256
+hist_range_min = 0
+hist_range_max = 256
+masked_array_min = 0
+masked_array_max = 255
+
 #calibrate camera
 def calibrate_camera ():
 
@@ -41,16 +47,71 @@ def get_sobel(image):
     sxbinary[(scaled_sobel >= THRESH_MIN) & (scaled_sobel <= THRESH_MAX)] = 1
     return sxbinary
 
+#mask
+def mask_image(image):
+    sw_x = image.shape[1] * .01
+    sw_y = image.shape[0]
+    nw_x = int(image.shape[1] * .35)
+    nw_y = int(image.shape[0] * .65)
+    ne_x = int(image.shape[1] * .65)
+    ne_y = int(image.shape[0] * .65)
+    se_x = int(image.shape[1] + (image.shape[1] * .1))
+    se_y = int(image.shape[0])
 
+
+    vertices = np.array([[(sw_x, sw_y),
+                          (nw_x,nw_y),
+                          (ne_x,ne_y),
+                          (se_x,se_y)]], dtype=np.int32)
+
+
+
+    mask = np.zeros_like(image)
+    # defining a 3 channel or 1 channel color to fill the mask with depending on the input image
+    if len(image.shape) > 2:
+        channel_count = image.shape[2]  # i.e. 3 or 4 depending on your image
+        ignore_mask_color = (255,) * channel_count
+    else:
+        ignore_mask_color = 255
+
+    # filling pixels inside the polygon defined by "vertices" with the fill color
+    cv.fillPoly(mask, vertices, ignore_mask_color)
+
+    # returning the image only where mask pixels are nonzero
+    masked_image = cv.bitwise_and(image, mask)
+    return masked_image
+
+def increase_contrast(image):
+    """this function increases the contrast of the BW image
+    """
+    equ = cv.equalizeHist(image)
+    hist, bins = np.histogram(equ.flatten(), bin_256, [hist_range_min, hist_range_max])
+    cdf = hist.cumsum()
+    cdf_m = np.ma.masked_equal(cdf, masked_array_min)
+    cdf_m = (cdf_m - cdf_m.min()) * masked_array_max / (cdf_m.max() - cdf_m.min())
+    cdf = np.ma.filled(cdf_m, masked_array_min).astype('uint8')
+    histogram = cdf[image]
+    return cv.equalizeHist(histogram)
 
 #get threshold
 def get_threshold(image):
+    # thresh_min = 20
+    # thresh_max = 100
+    # gray = cv.cvtColor(image, cv.COLOR_RGB2GRAY)
+    # sobelx = cv.Sobel(gray, cv.CV_64F, 1, 0)
+    # abs_sobelx = np.absolute(sobelx)
+    # scaled_sobel = np.uint8(255 * abs_sobelx / np.max(abs_sobelx))
+    # sxbinary = np.zeros_like(scaled_sobel)
+    # sxbinary[(scaled_sobel >= thresh_min) & (scaled_sobel <= thresh_max)] = 1
+    # return sxbinary
+
     hls = cv.cvtColor(image.astype(np.uint8), cv.COLOR_RGB2HLS)
     gray = cv.cvtColor(image, cv.COLOR_RGB2GRAY)
+    gray = increase_contrast(gray)
     s = hls[:, :, 2]
 
-    x, gray_threshold = cv.threshold(gray.astype('uint8'), 150, 255, cv.THRESH_BINARY)
-    x, s_threshold = cv.threshold(s.astype('uint8'), 150, 255, cv.THRESH_BINARY)
+    x, gray_threshold = cv.threshold(gray.astype('uint8'), 75, 255, cv.THRESH_BINARY)
+    x, s_threshold = cv.threshold(s.astype('uint8'), 75, 255, cv.THRESH_BINARY)
 
     combined_binary = np.clip(cv.bitwise_and(gray_threshold, s_threshold), 0, 1).astype('uint8')
 
