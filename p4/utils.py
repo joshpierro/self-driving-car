@@ -150,9 +150,9 @@ def calculate_curves(leftx,lefty,rightx,righty):
     return left_curverad,right_curverad
 
 def get_center_calc(video,left_fitx,right_fitx):
-    veh_pos = video.shape[1] / 2
-    middle = (left_fitx[-1] + right_fitx[-1]) // 2
-    center_calc = (veh_pos - middle) * XM_PER_PX
+    vehicle_position = video.shape[1] / 2
+    center_of_lane = (left_fitx[-1] + right_fitx[-1]) // 2
+    center_calc = (vehicle_position - center_of_lane) * XM_PER_PX
     return center_calc
 
 # combined_binarydef get_warped_perspective(img, reverse_persp=False):

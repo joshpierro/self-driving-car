@@ -92,22 +92,14 @@ def pipeline(video):
     left_fitx = left_fit[0]*ploty**2 + left_fit[1]*ploty + left_fit[2]
     right_fitx = right_fit[0]*ploty**2 + right_fit[1]*ploty + right_fit[2]
 
-
-    out_img[nonzeroy[left_lane_inds], nonzerox[left_lane_inds]] = [255, 0, 0]
-    out_img[nonzeroy[right_lane_inds], nonzerox[right_lane_inds]] = [0, 0, 255]
-
-    plt.imshow(out_img)
-    plt.plot(left_fitx, ploty, color='yellow')
-    plt.plot(right_fitx, ploty, color='yellow')
-    plt.xlim(0, 1280)
-    plt.ylim(720, 0)
-    plt.show(block=True)
+    #
+    # out_img[nonzeroy[left_lane_inds], nonzerox[left_lane_inds]] = [255, 0, 0]
+    # out_img[nonzeroy[right_lane_inds], nonzerox[right_lane_inds]] = [0, 0, 255]
 
     ####
     # calculate curves and centerline
     left_curverad, right_curverad =  utils.calculate_curves(leftx, lefty, rightx, righty)
     center_calc = utils.get_center_calc(video,left_fitx,right_fitx)
-
 
     ###
     warp_zero = np.zeros_like(threshold).astype(np.uint8)
@@ -140,11 +132,11 @@ def pipeline(video):
 cam_mtx, cam_dist = utils.calibrate_camera()
 
 #process video
-# video_path = 'project_video.mp4'
-# video_output = 'project_result.mp4'
-# output = VideoFileClip(video_path)
-# input = output.fl_image(pipeline)
-# input.write_videofile(video_output, audio=False)
+video_path = 'project_video.mp4'
+video_output = 'output_videos/project_result.mp4'
+output = VideoFileClip(video_path)
+input = output.fl_image(pipeline)
+input.write_videofile(video_output, audio=False)
 
 
 ##rubric point 1
@@ -243,75 +235,18 @@ cam_mtx, cam_dist = utils.calibrate_camera()
 # image = cv.imread('test_images/test2.jpg')
 # pipeline(image)
 #out_img = pipeline(image)
+#plt.show(block=True)
 
-
-# plt.subplot(1, 2, 2)
-# plt.imshow(color_warp)
-# plt.xlabel('warp with drawing')
-# plt.show(block=True)
-
-
-# plt.imshow(out_img)
-# plt.plot(left_fitx, ploty, color='yellow')
-# plt.plot(right_fitx, ploty, color='yellow')
-# plt.xlim(0, 1280)
-# plt.ylim(720, 0)
-# plt.show(block=True)
-
-
-# histogram = np.sum(threshold[threshold.shape[0]/2:,:], axis=0)
-# plt.plot(histogram)
-# plt.show(block=True)
-
+image = cv.imread('test_images/test2.jpg')
+result = pipeline(image)
 # plt.figure(figsize=(10,5))
 # plt.subplot(1, 2, 1)
 # plt.imshow(undistorted_dash)
 # plt.xlabel('Undistorted Image')
 #
 # plt.subplot(1, 2, 2)
-# plt.imshow(threshold, cmap='gray')
-# plt.xlabel('threshold warped Image')
+# plt.imshow(result)
+# plt.xlabel('Final Output')
+# plt.xticks([], [])
+# plt.yticks([], [])
 # plt.show(block=True)
-
-
-# plt.figure(figsize=(10,5))
-# plt.subplot(1, 2, 1)
-# plt.imshow(undistorted_dash)
-# plt.xlabel('Undistorted Image')
-#
-# plt.subplot(1, 2, 2)
-# plt.imshow(warped)
-# plt.xlabel('warped Image')
-# plt.show(block=True)
-
-
-# plt.figure(figsize=(10,5))
-# plt.subplot(1, 2, 1)
-# plt.imshow(undistorted_dash)
-# plt.xlabel('Undistorted Image')
-#
-#
-# plt.subplot(1, 2, 2)
-# plt.imshow(aerial)
-# plt.xlabel('Aerial Image')
-# plt.show(block=True)
-
-
-# plt.figure(figsize=(10,5))
-# plt.subplot(1, 2, 1)
-# plt.imshow(undist)
-# plt.xlabel('Undistorted Image')
-
-
-# plt.subplot(1, 2, 2)
-# plt.imshow(threshold, cmap='gray')
-# plt.xlabel('Threshold Image')
-# plt.show(block=True)
-
-
-# #Read Video
-# white_output = 'output_videos/project_output.mp4'
-# project_video = VideoFileClip('project_video.mp4')
-# #white_clip = clip1.fl_image(process_image)
-# #white_clip.write_videofile(white_output, audio=False)
-
