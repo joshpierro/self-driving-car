@@ -8,13 +8,24 @@ My app.py file contains all of the code that defines and execute my pipeline. Me
 
 ####1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
 
-The code for this step is contained in the first code cell of the IPython notebook located in "./examples/example.ipynb" (or in lines # through # of the file called `some_file.py`).  
+The purpose of this exercise is to correct any distortion that is introduced by the car's camera, which occurs when objects in the real world (3d) are projected on to a 2d plane. Several variated images of a chessboard pattern are used to define and correct the camera's distortion in the calibration process.   
 
-I start by preparing "object points", which will be the (x, y, z) coordinates of the chessboard corners in the world. Here I am assuming the chessboard is fixed on the (x, y) plane at z=0, such that the object points are the same for each calibration image.  Thus, `objp` is just a replicated array of coordinates, and `objpoints` will be appended with a copy of it every time I successfully detect all chessboard corners in a test image.  `imgpoints` will be appended with the (x, y) pixel position of each of the corners in the image plane with each successful chessboard detection.  
+In the calibrate_camera function, the arrays 'object_points' and 'image_points' are defined to hold the coordinates of  'chessboard' corners in real world space (3d) and 2d space. Next, all of the calibration images are looped through, where:
+* the image is converted to gray scale
+* each grayscale image is passed to the OpenCV method 'findChessboardCorners', along with the number of corners (NX,NY) 
+* The corners of each grayscale image are added to the image_points array
 
-I then used the output `objpoints` and `imgpoints` to compute the camera calibration and distortion coefficients using the `cv2.calibrateCamera()` function.  I applied this distortion correction to the test image using the `cv2.undistort()` function and obtained this result: 
+Once the calibration images have been processed 'object_points' and 'image_points' are passed to the OpenCV method calibrateCamera, which returns the camera matrix, distortion coefficients, rotation and translation vectors. These values are subsequently used in a function (cv.undistort) that undistorts the car's camera. 
 
-![alt text][image1]
+The following image illustrates an chessboard, before and after calibration and processing it with the OpenCV undistort function. App.py lines 143-144 contain the code that generated this image. 
+<img src='https://github.com/joshpierro/self-driving-car/blob/master/p4/output_images/point1.png'>
+
+The function for calibrating my camera (calibrate_camera) can be found in utils.py on lines 24-41. It is called by app.py on line 132 after my pipeline is defined.  
+
+<pre>
+#calibrate Camera<br>
+cam_mtx, cam_dist = utils.calibrate_camera()
+</pre>
 
 ###Pipeline (single images)
 
