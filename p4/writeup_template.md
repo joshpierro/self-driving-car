@@ -73,9 +73,26 @@ The following image illustrates the threshold binary derived from a warped image
 
 ####4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
 
-Then I did some other stuff and fit my lane lines with a 2nd order polynomial kinda like this:
+I used the histogram and sliding window method, as described in the lectures, to identify my lane lines and fit their position with a polynomial. 
 
-![alt text][image5]
+The first step was to take a histogram along the lower 1/2 of the image (line 27 in app.py)
+
+<pre>  histogram = np.sum(threshold[threshold.shape[0]/2:,:], axis=0)</pre>
+<img src='https://github.com/joshpierro/self-driving-car/blob/master/p4/output_images/point5.png'>
+
+Next, the peaks of the right and left halves of the histogram are identified, which will be used as the starting point for the lanes (lines 30-32 in app.py). 
+<pre>
+    midpoint = np.int(histogram.shape[0]/2)<br>
+    leftx_base = np.argmax(histogram[:midpoint])<br>
+    rightx_base = np.argmax(histogram[midpoint:]) + midpoint
+</pre>
+
+After the baselines for the lane lines are identified, a sliding window technique is applied to discover the rest of the lane pixels. This technique divides the image into horizontal sections (9 was chosen in my case), where baselines are derived and lanelines can be found and followed up to the top of the frame. Lines 37-70 in app.py is where the sliding window parameters are set up and it loops through the windows. 
+
+Once the left and right laneline pixels have been extracted, a second order polynomial is applied to each. The image below illlustrates the sliding window and polynomial overlays on a binary lane line image. 
+
+<img src='https://github.com/joshpierro/self-driving-car/blob/master/p4/output_images/point5_1.png'>
+
 
 ####5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
