@@ -158,23 +158,44 @@ cam_mtx, cam_dist = utils.calibrate_camera()
 # plt.show(block=True)
 
 
-#rubric point 2
+# #rubric point 2
+# image = cv.imread('test_images/test1.jpg')
+# masked = utils.mask_image(image)
+# undistorted_dash = cv.undistort(masked, cam_mtx, cam_dist, None, cam_mtx)
+#
+# plt.figure(figsize=(10,5))
+# plt.subplot(1, 2, 1)
+# plt.imshow(image,cmap='gray')
+# plt.xlabel('Original Image')
+# plt.xticks([], [])
+# plt.yticks([], [])
+#
+# plt.subplot(1, 2, 2)
+# plt.imshow(undistorted_dash)
+# plt.xlabel('Undistorted and Masked Image')
+# plt.xticks([], [])
+# plt.yticks([], [])
+# plt.show(block=True)
+#
+
+#point 3
 image = cv.imread('test_images/test1.jpg')
 masked = utils.mask_image(image)
 undistorted_dash = cv.undistort(masked, cam_mtx, cam_dist, None, cam_mtx)
+m = cv.getPerspectiveTransform(utils.source(), utils.destination())
+m_inverse = cv.getPerspectiveTransform(utils.destination(), utils.source())
+image_size = (undistorted_dash.shape[1], undistorted_dash.shape[0])
+warped = cv.warpPerspective(undistorted_dash, m, image_size, flags=cv.INTER_LINEAR)
+
 
 plt.figure(figsize=(10,5))
 plt.subplot(1, 2, 1)
-plt.imshow(image,cmap='gray')
-plt.xlabel('Original Image')
-plt.xticks([], [])
-plt.yticks([], [])
+plt.imshow(undistorted_dash)
+plt.xlabel('Undistorted Image')
 
 plt.subplot(1, 2, 2)
-plt.imshow(undistorted_dash)
-plt.xlabel('Undistorted and Masked Image')
-plt.xticks([], [])
-plt.yticks([], [])
+plt.imshow(warped)
+plt.xlabel('warped Image')
 plt.show(block=True)
 
 
