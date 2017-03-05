@@ -178,33 +178,44 @@ cam_mtx, cam_dist = utils.calibrate_camera()
 # plt.show(block=True)
 #
 
-#point 3
-image = cv.imread('test_images/test1.jpg')
+# #point 3
+# image = cv.imread('test_images/test1.jpg')
+# masked = utils.mask_image(image)
+# undistorted_dash = cv.undistort(masked, cam_mtx, cam_dist, None, cam_mtx)
+# m = cv.getPerspectiveTransform(utils.source(), utils.destination())
+# m_inverse = cv.getPerspectiveTransform(utils.destination(), utils.source())
+# image_size = (undistorted_dash.shape[1], undistorted_dash.shape[0])
+# warped = cv.warpPerspective(undistorted_dash, m, image_size, flags=cv.INTER_LINEAR)
+#
+# plt.figure(figsize=(10,5))
+# plt.subplot(1, 2, 1)
+# plt.imshow(undistorted_dash)
+# plt.xlabel('Undistorted Image')
+#
+# plt.subplot(1, 2, 2)
+# plt.imshow(warped)
+# plt.xlabel('warped Image')
+# plt.show(block=True)
+
+#point 4
+image = cv.imread('test_images/test2.jpg')
 masked = utils.mask_image(image)
 undistorted_dash = cv.undistort(masked, cam_mtx, cam_dist, None, cam_mtx)
 m = cv.getPerspectiveTransform(utils.source(), utils.destination())
 m_inverse = cv.getPerspectiveTransform(utils.destination(), utils.source())
 image_size = (undistorted_dash.shape[1], undistorted_dash.shape[0])
 warped = cv.warpPerspective(undistorted_dash, m, image_size, flags=cv.INTER_LINEAR)
-
+threshold = utils.get_threshold(warped)
 
 plt.figure(figsize=(10,5))
 plt.subplot(1, 2, 1)
-plt.imshow(undistorted_dash)
+plt.imshow(warped)
 plt.xlabel('Undistorted Image')
 
 plt.subplot(1, 2, 2)
-plt.imshow(warped)
-plt.xlabel('warped Image')
+plt.imshow(threshold,cmap='gray')
+plt.xlabel('Threshold Image')
 plt.show(block=True)
-
-
-
-# plt.subplot(1, 2, 2)
-# plt.imshow(result)
-# plt.xlabel('lane lines')
-# plt.show(block=True)
-
 
 # plt.subplot(1, 2, 2)
 # plt.imshow(color_warp)
