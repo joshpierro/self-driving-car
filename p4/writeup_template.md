@@ -30,42 +30,46 @@ cam_mtx, cam_dist = utils.calibrate_camera()
 ###Pipeline (single images)
 
 ####1. Provide an example of a distortion-corrected image.
-To demonstrate this step, I will describe how I apply the distortion correction to one of the test images like this one:
-![alt text][image2]
-####2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
-I used a combination of color and gradient thresholds to generate a binary image (thresholding steps at lines # through # in `another_file.py`).  Here's an example of my output for this step.  (note: this is not actually from one of the test images)
+Using the output of the previous step, I was able to generate an undistorted image using the OpenCV 'undistort' method. 
+This can be seen on line 20 of app.py.  
 
-![alt text][image3]
+<pre>
+    undistorted_dash = cv.undistort(masked, cam_mtx, cam_dist, None, cam_mtx)
+</pre>
 
-####3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
+It should be noted that I also applied a mask to the original image to remove un-needed pixels and aid in future processing. An example of a distortion corrected image can be found below. The correction is most visible along the bottom edge. The code that generated these images can be found in lines 162-178 in app.py. 
 
-The code for my perspective transform includes a function called `warper()`, which appears in lines 1 through 8 in the file `example.py` (output_images/examples/example.py) (or, for example, in the 3rd code cell of the IPython notebook).  The `warper()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points.  I chose the hardcode the source and destination points in the following manner:
+<img src='https://github.com/joshpierro/self-driving-car/blob/master/p4/output_images/point2.png'>
 
-```
-src = np.float32(
-    [[(img_size[0] / 2) - 55, img_size[1] / 2 + 100],
-    [((img_size[0] / 6) - 10), img_size[1]],
-    [(img_size[0] * 5 / 6) + 60, img_size[1]],
-    [(img_size[0] / 2 + 55), img_size[1] / 2 + 100]])
-dst = np.float32(
-    [[(img_size[0] / 4), 0],
-    [(img_size[0] / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), 0]])
 
-```
-This resulted in the following source and destination points:
+####2. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 
-| Source        | Destination   | 
-|:-------------:|:-------------:| 
-| 585, 460      | 320, 0        | 
-| 203, 720      | 320, 720      |
-| 1127, 720     | 960, 720      |
-| 695, 460      | 960, 0        |
+When I first attempted the perspective transform, I took an image from google maps and a test image (test1.jpg) and tried to define my source and destination control points to be used in the OpenCV perspective transform function. This approach was inspired by the stop sign exercise in the lectures. This, however, gave wonky results and I was unable to sucessfully get an acceptable birdseye image.  
 
-I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image.
+<img src='https://github.com/joshpierro/self-driving-car/blob/master/p4/output_images/aerial.png'>
 
-![alt text][image4]
+As a result, I ended up using hard coded values for my source and destination that were derived through lots of trial and error. The values for my source and destination can be found in lines 124-140 in utils.py and my implementation can be found on line 21-24 in app.py. It should be noted that I also derived an inverse perspective transform for when the birdseye view is converted back to the dashcam view.  
+
+<pre>
+    m = cv.getPerspectiveTransform(utils.source(), utils.destination())
+    m_inverse = cv.getPerspectiveTransform(utils.destination(),utils.source())
+    image_size = (undistorted_dash.shape[1],undistorted_dash.shape[0])
+    warped = cv.warpPerspective(undistorted_dash, m, image_size, flags=cv.INTER_LINEAR)
+</pre>
+
+An example of my perspective transform can be found below. The code that generated these images can be found on lines 181-198 in app.py. 
+
+<img src='https://github.com/joshpierro/self-driving-car/blob/master/p4/output_images/point3.png'>
+
+
+####3. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
+
+I used a combination of thresholds in the S-channel of HLS colorspace and grayscale to derive a binary image from my warped image. The OpenCV 'threshold' method with cv.THRESH_BINARY as the threshold type was utimately used. I found that this gave a slightly better result than the OpenCV sobel method. My implementation can be found on line 25 in app.py, which calls the 'get_threshold' function in utils.py (lines 101-109). 
+
+<pre>threshold = utils.get_threshold(warped)</pre>
+
+The following image illustrates the threshold binary derived from a warped image. The code to generate this image can be found on lines 201-218. 
+<img src='https://github.com/joshpierro/self-driving-car/blob/master/p4/output_images/point4.png'>
 
 ####4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
 
@@ -98,6 +102,9 @@ Here's a [link to my video result](./project_video.mp4)
 ####1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
 Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+
+Birdseye - used values, not percents 
+
 
 
 * Compute the camera calibration matrix and distortion coefficients given a set of chessboard images.
