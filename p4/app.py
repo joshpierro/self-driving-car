@@ -139,7 +139,7 @@ cam_mtx, cam_dist = utils.calibrate_camera()
 # input.write_videofile(video_output, audio=False)
 
 
-#rubric point 1
+##rubric point 1
 # image = cv.imread('camera_cal/calibration1.jpg')
 # undist = cv.undistort(image, cam_mtx, cam_dist, None, cam_mtx)
 #
@@ -156,6 +156,27 @@ cam_mtx, cam_dist = utils.calibrate_camera()
 # plt.xticks([], [])
 # plt.yticks([], [])
 # plt.show(block=True)
+
+
+#rubric point 2
+image = cv.imread('test_images/test1.jpg')
+masked = utils.mask_image(image)
+undistorted_dash = cv.undistort(masked, cam_mtx, cam_dist, None, cam_mtx)
+
+plt.figure(figsize=(10,5))
+plt.subplot(1, 2, 1)
+plt.imshow(image,cmap='gray')
+plt.xlabel('Original Image')
+plt.xticks([], [])
+plt.yticks([], [])
+
+plt.subplot(1, 2, 2)
+plt.imshow(undistorted_dash)
+plt.xlabel('Undistorted and Masked Image')
+plt.xticks([], [])
+plt.yticks([], [])
+plt.show(block=True)
+
 
 
 # plt.subplot(1, 2, 2)
