@@ -27,6 +27,8 @@ def pipeline(video):
     histogram = np.sum(threshold[threshold.shape[0]/2:,:], axis=0)
     out_img = np.dstack((threshold, threshold, threshold))*255
 
+    # Find the peak of the left and right halves of the histogram
+    # These will be the starting point for the left and right lines
     midpoint = np.int(histogram.shape[0]/2)
     leftx_base = np.argmax(histogram[:midpoint])
     rightx_base = np.argmax(histogram[midpoint:]) + midpoint
@@ -91,9 +93,15 @@ def pipeline(video):
     right_fitx = right_fit[0]*ploty**2 + right_fit[1]*ploty + right_fit[2]
 
 
-    # out_img[nonzeroy[left_lane_inds], nonzerox[left_lane_inds]] = [255, 0, 0]
-    # out_img[nonzeroy[right_lane_inds], nonzerox[right_lane_inds]] = [0, 0, 255]
-    #
+    out_img[nonzeroy[left_lane_inds], nonzerox[left_lane_inds]] = [255, 0, 0]
+    out_img[nonzeroy[right_lane_inds], nonzerox[right_lane_inds]] = [0, 0, 255]
+
+    plt.imshow(out_img)
+    plt.plot(left_fitx, ploty, color='yellow')
+    plt.plot(right_fitx, ploty, color='yellow')
+    plt.xlim(0, 1280)
+    plt.ylim(720, 0)
+    plt.show(block=True)
 
     ####
     # calculate curves and centerline
@@ -197,25 +205,45 @@ cam_mtx, cam_dist = utils.calibrate_camera()
 # plt.xlabel('warped Image')
 # plt.show(block=True)
 
-#point 4
-image = cv.imread('test_images/test2.jpg')
-masked = utils.mask_image(image)
-undistorted_dash = cv.undistort(masked, cam_mtx, cam_dist, None, cam_mtx)
-m = cv.getPerspectiveTransform(utils.source(), utils.destination())
-m_inverse = cv.getPerspectiveTransform(utils.destination(), utils.source())
-image_size = (undistorted_dash.shape[1], undistorted_dash.shape[0])
-warped = cv.warpPerspective(undistorted_dash, m, image_size, flags=cv.INTER_LINEAR)
-threshold = utils.get_threshold(warped)
+# #point 4
+# image = cv.imread('test_images/test2.jpg')
+# masked = utils.mask_image(image)
+# undistorted_dash = cv.undistort(masked, cam_mtx, cam_dist, None, cam_mtx)
+# m = cv.getPerspectiveTransform(utils.source(), utils.destination())
+# m_inverse = cv.getPerspectiveTransform(utils.destination(), utils.source())
+# image_size = (undistorted_dash.shape[1], undistorted_dash.shape[0])
+# warped = cv.warpPerspective(undistorted_dash, m, image_size, flags=cv.INTER_LINEAR)
+# threshold = utils.get_threshold(warped)
+#
+# plt.figure(figsize=(10,5))
+# plt.subplot(1, 2, 1)
+# plt.imshow(warped)
+# plt.xlabel('Undistorted Image')
+#
+# plt.subplot(1, 2, 2)
+# plt.imshow(threshold,cmap='gray')
+# plt.xlabel('Threshold Image')
+# plt.show(block=True)
 
-plt.figure(figsize=(10,5))
-plt.subplot(1, 2, 1)
-plt.imshow(warped)
-plt.xlabel('Undistorted Image')
+#point 5
+# image = cv.imread('test_images/test2.jpg')
+# masked = utils.mask_image(image)
+# undistorted_dash = cv.undistort(masked, cam_mtx, cam_dist, None, cam_mtx)
+# m = cv.getPerspectiveTransform(utils.source(), utils.destination())
+# m_inverse = cv.getPerspectiveTransform(utils.destination(), utils.source())
+# image_size = (undistorted_dash.shape[1], undistorted_dash.shape[0])
+# warped = cv.warpPerspective(undistorted_dash, m, image_size, flags=cv.INTER_LINEAR)
+# threshold = utils.get_threshold(warped)
+# histogram = np.sum(threshold[threshold.shape[0] / 2:, :], axis=0)
+# out_img = np.dstack((threshold, threshold, threshold)) * 255
+#
+# plt.plot(histogram)
+# plt.show(block=True)
 
-plt.subplot(1, 2, 2)
-plt.imshow(threshold,cmap='gray')
-plt.xlabel('Threshold Image')
-plt.show(block=True)
+# image = cv.imread('test_images/test2.jpg')
+# pipeline(image)
+#out_img = pipeline(image)
+
 
 # plt.subplot(1, 2, 2)
 # plt.imshow(color_warp)
