@@ -44,11 +44,11 @@ It should be noted that I also applied a mask to the original image to remove un
 
 ####2. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 
-When I first attempted the perspective transform, I took an image from google maps and a test image (test1.jpg) and tried to define my source and destination control points to be used in the OpenCV perspective transform function. This approach was inspired by the stop sign exercise in the lectures. This, however, gave wonky results and I was unable to sucessfully get an acceptable birdseye image.  
+When I first attempted the perspective transform, I took an image from google maps and a test image (test1.jpg) and tried to define my source and destination control points to be used in the OpenCV perspective transform function. This approach was inspired by the stop sign exercise in the lectures. This, however, gave wonky results and I was unable to successfully get an acceptable birds eye image.  
 
 <img src='https://github.com/joshpierro/self-driving-car/blob/master/p4/output_images/aerial.png'>
 
-As a result, I ended up using hard coded values for my source and destination that were derived through lots of trial and error. The values for my source and destination can be found in lines 124-140 in utils.py and my implementation can be found on line 21-24 in app.py. It should be noted that I also derived an inverse perspective transform for when the birdseye view is converted back to the dashcam view.  
+As a result, I ended up using hard coded values for my source and destination that were derived through lots of trial and error. The values for my source and destination can be found in lines 124-140 in utils.py and my implementation can be found on line 21-24 in app.py. It should be noted that I also derived an inverse perspective transform for when the birds eye view is converted back to the dash cam view.  
 
 <pre>
     m = cv.getPerspectiveTransform(utils.source(), utils.destination())
@@ -64,7 +64,7 @@ An example of my perspective transform can be found below. The code that generat
 
 ####3. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
-I used a combination of thresholds in the S-channel of HLS colorspace and grayscale to derive a binary image from my warped image. The OpenCV 'threshold' method with cv.THRESH_BINARY as the threshold type was utimately used. I found that this gave a slightly better result than the OpenCV sobel method. My implementation can be found on line 25 in app.py, which calls the 'get_threshold' function in utils.py (lines 101-109). 
+I used a combination of thresholds in the S-channel of HLS color space and grayscale to derive a binary image from my warped image. The OpenCV 'threshold' method with cv.THRESH_BINARY as the threshold type was ultimately used. I found that this gave a slightly better result than the OpenCV sobel method. My implementation can be found on line 25 in app.py, which calls the 'get_threshold' function in utils.py (lines 101-109). 
 
 <pre>threshold = utils.get_threshold(warped)</pre>
 
@@ -87,9 +87,9 @@ Next, the peaks of the right and left halves of the histogram are identified, wh
     rightx_base = np.argmax(histogram[midpoint:]) + midpoint
 </pre>
 
-After the baselines for the lane lines are identified, a sliding window technique is applied to discover the rest of the lane pixels. This technique divides the image into horizontal sections (9 was chosen in my case), where baselines are derived and lanelines can be found and followed up to the top of the frame. Lines 37-70 in app.py is where the sliding window parameters are set up and it loops through the windows. 
+After the baselines for the lane lines are identified, a sliding window technique is applied to discover the rest of the lane pixels. This technique divides the image into horizontal sections (9 was chosen in my case), where baselines are derived and lane lines can be found and followed up to the top of the frame. Lines 37-70 in app.py is where the sliding window parameters are set up and it loops through the windows. 
 
-Once the left and right laneline pixels have been extracted, a second order polynomial is applied to each. The image below illlustrates the sliding window and polynomial overlays on a binary lane line image. 
+Once the left and right lane line pixels have been extracted, a second order polynomial is applied to each. The image below illustrates the sliding window and polynomial overlays on a binary lane line image. 
 
 <img src='https://github.com/joshpierro/self-driving-car/blob/master/p4/output_images/point5_1.png'>
 
@@ -100,7 +100,7 @@ The curvature of the lane lines were calculated with the algorithm provided in t
 
 <pre>left_curverad, right_curverad =  utils.calculate_curves(leftx, lefty, rightx, righty)</pre>
 
-The distance of the car in relation to the center of the lane was derived by assuming the center of the image was the center of the car, then calculting how far value that was from each lane boundary. Line 102 in app.py calls the function get_center_calc lines 152-156  The average of those two values were displayed. 
+The distance of the car in relation to the center of the lane was derived by assuming the center of the image was the center of the car, then calculating how far value that was from each lane boundary. Line 102 in app.py calls the function get_center_calc lines 152-156  The average of those two values were displayed. 
 
 <pre>center_calc = utils.get_center_calc(video,left_fitx,right_fitx)</pre>
 
@@ -114,14 +114,14 @@ XM_PER_PX = 3.7 / 700
 
 ####6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
-Lines 105-127 in app.py handle rendering the lane lines, performing a (reverse) perspective transform, adding annotation to the video frame and returning the result. A screenshot of the result can be found below:
+Lines 105-127 in app.py handle rendering the lane lines, performing a (reverse) perspective transform, adding annotation to the video frame and returning the result. A screen shot of the result can be found below:
 
 <img src='https://github.com/joshpierro/self-driving-car/blob/master/p4/output_images/point6.png'>
 
 
 ###Pipeline (video)
 
-####1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
+####1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are OK but no catastrophic failures that would cause the car to drive off the road!).
 
 My final video can be found in this repo's <a href='https://github.com/joshpierro/self-driving-car/blob/master/p4/output_videos/project_video.mp4'>output_videos</a> directory, or on <a href='https://youtu.be/sAbNnXe8I-M'>youtube</a>. 
 
@@ -133,17 +133,21 @@ My final video can be found in this repo's <a href='https://github.com/joshpierr
 
 ####1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-I was pleasantly suprised to find that if one followed the guidelines in the lectures, one could get solution that was 80% there fairly easily. As always, my approach to these sorts of problems is to get an end to end solution and iterate until the result was acceptable. That said, a fair amount of trial and error was necessary for each step and a few roadblocks were encountered along the way. 
+I was pleasantly surprised to find that if one followed the guidelines in the lectures, one could get solution that was 80% there fairly easily. As always, my approach to these sorts of problems is to get an end to end solution and iterate until the result was acceptable. That said, a fair amount of trial and error was necessary for each step and a few roadblocks were encountered along the way. 
 
 The first impediment I found was that the sliding window implementation produced some zero length arrays that blew up the function that fit the lane lines with a polynomial. To overcome this I simply cached the last good frame result and fell back on that if zero length arrays were found. 
 
-The only other real problem I had was that in certain sections of road there were very large values in the lane indicies that resulted in angles/lane lines that had unpredictable results. To combat this I manually identified a threshold for acceptable values in the indicies and if a frame did not meet that limit I fell back to the last acceptable result. While this is admittedly a ham fisted solution, it provided decent results on the project_video. 
+The only other real problem I had was that in certain sections of road there were very large values in the lane indices that resulted in angles/lane lines that had unpredictable results. To combat this I manually identified a threshold for acceptable values in the indices and if a frame did not meet that limit I fell back to the last acceptable result. While this is admittedly a ham fisted solution, it provided decent results on the project_video. 
 
 <img src='https://github.com/joshpierro/self-driving-car/blob/master/p4/output_images/bad_result.png'>
 
-This approach, however, failed miserably on the subsequent challenge videos with curvy turns. The steep curves regularly exceeded the thresholds that I set. More exploration is needed to identify and address the root cause of these outliers. Ideas for improvement include tuning and improving the threshold functions that generate binary images and better masking.  Also, if this technique were to be developed further, dynamic sizing of the thresholds (i.e. standard deviations) would be prudent.  
+This approach, however, failed miserably on the subsequent challenge videos with sharp turns. The steep curves regularly exceeded the thresholds that I set. More exploration is needed to identify and address the root cause of the outliers on normal straight road conditions to come up with a better solution.
 
-Other improvements that could be made in my pipeline are related to my generation of birdseye images. I currently use discrete pixel values to set the source and destination values. Percentages would be be better, so the pipeline could handle different size images. Also, it would be worth exploring if image analysis could be used to identify control points on both the source and destination images. 
+Currently, however, my pipeline has proven to perform poorly with videos/images that have sharp curves. Other anomalies are also likely to make it fail as well, such as different lighting conditions, adverse weather conditions, unusual road conditions/surfaces and more  
+
+Ideas for improvement for my pipeline include tuning and improving the threshold functions that generate binary images and better masking. This would likely address the issues noted above.  Also, if this technique were to be developed further, dynamic sizing of the thresholds (i.e. standard deviations) would be prudent.  
+
+Other improvements that could be made in my pipeline are related to my generation of birds eye images. I currently use discrete pixel values to set the source and destination values. Percentages would be be better, so the pipeline could handle different size images. Also, it would be worth exploring if image analysis could be used to identify control points on both the source and destination images. 
 
 
 <strong>Checklist</strong>
@@ -155,4 +159,3 @@ Other improvements that could be made in my pipeline are related to my generatio
 * <del>Determine the curvature of the lane and vehicle position with respect to center.</del>
 * <del>Warp the detected lane boundaries back onto the original image.</del>
 * <del>Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.</del>
-
