@@ -4,6 +4,17 @@ This repo contains my submission for the <strong>Advanced Lane Finding</strong> 
 
 My app.py file contains all of the code that defines and execute my pipeline. Methods in the utils.py script were used to delegate much of the logic used to process the images.
 
+[//]: # (Image References)
+[point1]: ./output_images/point1.png "Camera Calibration/Undistorted Imagwe"
+[point2]: ./output_images/point2.png "Undistorted Image"
+[point3]: ./output_images/point3.png "Perspective Transform"
+[point4]: ./output_images/point4.png "Threshold/Binary image"
+[point5]: ./output_images/point5.png "Histogram"
+[point5_1]: ./output_images/point5_1.png "Sliding Window"
+[point6]: ./output_images/point6.png "Final Result"
+[bad_result]: ./output_images/bad_result.png "Bad results"
+
+
 ###Camera Calibration
 
 ####1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
