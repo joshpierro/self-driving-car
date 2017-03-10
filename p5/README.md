@@ -1,18 +1,6 @@
-##Writeup Template
-###You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
-
----
-
 **Vehicle Detection Project**
 
-The goals / steps of this project are the following:
-
-* Perform a Histogram of Oriented Gradients (HOG) feature extraction on a labeled training set of images and train a classifier Linear SVM classifier
-* Optionally, you can also apply a color transform and append binned color features, as well as histograms of color, to your HOG feature vector. 
-* Note: for those first two steps don't forget to normalize your features and randomize a selection for training and testing.
-* Implement a sliding-window technique and use your trained classifier to search for vehicles in images.
-* Run your pipeline on a video stream (start with the test_video.mp4 and later implement on full project_video.mp4) and create a heat map of recurring detections frame by frame to reject outliers and follow detected vehicles.
-* Estimate a bounding box for vehicles detected.
+This repo contains my submission for the <strong>Vehicle Detection Project</strong>, and this readme describes my approach and its components. All of the code that defines and trains my classifier, as well as defines and executes my pipeline, is found in app.py. Much of the logic used for loading and processing data was deligated to the utils.py file. The subsequent sections outline how these components fulfill the requirements defined in the project <a href='https://review.udacity.com/#!/rubrics/513/view' target='_blank'>rubric</a>.
 
 [//]: # (Image References)
 [image1]: ./examples/car_not_car.png
@@ -23,6 +11,9 @@ The goals / steps of this project are the following:
 [image6]: ./examples/labels_map.png
 [image7]: ./examples/output_bboxes.png
 [video1]: ./project_video.mp4
+
+
+
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
 ###Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
@@ -105,4 +96,13 @@ Here's an example result showing the heatmap from a series of frames of video, t
 ####1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
 Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+
+<strong>Checklist</strong>
+* <del>Perform a Histogram of Oriented Gradients (HOG) feature extraction on a labeled training set of images and train a classifier Linear SVM classifier</del>
+* <del>Optionally, you can also apply a color transform and append binned color features, as well as histograms of color, to your HOG feature vector. </del>
+* <del>Note: for those first two steps don't forget to normalize your features and randomize a selection for training and testing.</del>
+* <del>Implement a sliding-window technique and use your trained classifier to search for vehicles in images.</del>
+* <del>Run your pipeline on a video stream (start with the test_video.mp4 and later implement on full project_video.mp4) and create a heat map of recurring detections frame by frame to reject outliers and follow detected vehicles.</del>
+* <del>Estimate a bounding box for vehicles detected.</del>
+
 
