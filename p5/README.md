@@ -125,7 +125,7 @@ Specifically, some of the issues I had include, but were not limited to; selecti
 
 Situations where my pipeline might fail, include, but are not limited to: night time driving, inclement weather, different driving conditions (super urban,super rural), switching lanes and objects unknown to the classifier, like a motorcycle, cyclist or cow crossing the road. 
 
-To over come some of the issues described above and improve the pipeline, I think that more training data could help. For example, images if vehicles and non vehicles in inclement weather and night time conditions. Also, a hardened strategy (more dimensions) for creating my heatmaps (using adjacent frames) would also help. 
+To over come some of the issues described above and improve the pipeline, I think that more training data could help. For example, images if vehicles and non vehicles in inclement weather and night time conditions. Also, a hardened strategy (more dimensions) for creating my heatmaps (using adjacent frames) would also help. Finally, implementing the Hog Sub-sampling Window Search, where Hog features are only extracted once would improve the processing and efficiency of the pipeline.  
 
 <strong>Checklist</strong>
 * <del>Perform a Histogram of Oriented Gradients (HOG) feature extraction on a labeled training set of images and train a classifier Linear SVM classifier</del>
