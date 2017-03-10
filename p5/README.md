@@ -106,12 +106,41 @@ I used the Y channel of the YUV color space, as well as spatially binned color a
 
 ####1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are OK as long as you are identifying the vehicles most of the time with minimal false positives.)
 
-Here's a link to my <a href='https://youtu.be/3TsLTGJLfKs'>final video</a>:  <br>
+<del>Here's a link to my <a href='https://youtu.be/3TsLTGJLfKs'>final video</a>: </del> <br>
+Here is my  <a href='https://youtu.be/a7tLUqgh9fk'>UPDATED final video</a>:  <br>
 It can also be found in the root of this repo project_results.mp4
 
 ####2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
-In lines 146-155 of app.py I implement a thresholded heatmap to identify and and label vehicle positions. This was my main strategy for reducing false positives. I then constructed bounding boxes to cover the area of each hot spot detected. A richer strategy might include aggregating the results from adjacent frames in the video and set a threshold on that. This would certainly cull out more anomalies. 
+On the advice on my project reviewer, I enhanced my heatmap and false positive detection strategy. Instead of creating a heat map and threshold for a single frame, I kept track of the heatmaps of 10 adjacent frames (with collections.deque) and then averaged them. I subsequently performed my thresholding and labeling on these heatmaps. This can be seen above and inside my pipeline function on lines 131-162 in app.py.   
+
+<pre>
+d = deque(maxlen=10)
+</pre>
+
+<pre>
+    heatmap = np.clip(heat, 0, 255) <br>
+    d.append(heatmap)<br>
+    a = np.average(d,axis=0)<br>
+    av_thresh = utils.apply_threshold(a,2)<br>
+    labels = label(av_thresh)<br>
+</pre>
+
+I also took this opportunity to implement another suggestion from my reviewer, as well as one of my own. My reviewer suggested that I explore the C parameter of my Linear CSV. I experimented with a few values and was able to reduce my false classifications significantly. This can be seen on line 88 of app.py. 
+
+<pre>
+svc = LinearSVC(C=5)
+</pre>
+
+Finally, I calculated the height and width of my bounding boxes and only drew them if they were a certain height and width. This culled out many of the small boxes that were false positives and noise around actual cars. This can be seen on lines 302-303 in my utils.py script.
+
+<pre>
+if height>400 and width>400:<br>
+    cv2.rectangle(img, bbox[0], bbox[1], (0,0,255), 6)
+</pre>
+
+Each of these incremental improvements gave me a deeper understanding of the project and provided a MUCH smoother video!
+Here is my  <a href='https://youtu.be/a7tLUqgh9fk'>UPDATED final video</a>:
 
 ---
 
