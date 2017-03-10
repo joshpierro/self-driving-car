@@ -106,7 +106,7 @@ I used the Y channel of the YUV color space, as well as spatially binned color a
 
 ####1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are OK as long as you are identifying the vehicles most of the time with minimal false positives.)
 
-Here's a link to my final video: <br>
+Here's a link to my <a href='https://youtu.be/3TsLTGJLfKs'>final video</a>:  <br>
 It can also be found in the root of this repo project_results.mp4
 
 ####2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
