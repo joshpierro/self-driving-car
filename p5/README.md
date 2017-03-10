@@ -106,7 +106,7 @@ I used the Y channel of the YUV color space, as well as spatially binned color a
 
 ####1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are OK as long as you are identifying the vehicles most of the time with minimal false positives.)
 
-Here's a link to my final video: 
+Here's a link to my final video: <br>
 It can also be found in the root of this repo project_results.mp4
 
 ####2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
@@ -125,7 +125,7 @@ Specifically, some of the issues I had include, but were not limited to; selecti
 
 Situations where my pipeline might fail, include, but are not limited to: night time driving, inclement weather, different driving conditions (super urban,super rural), switching lanes and objects unknown to the classifier, like a motorcycle, cyclist or cow crossing the road. 
 
-To over come some of the issues described above, I think that more training data could help. For example, images if vehicles and non vehicles in inclement weather and night time conditions. Also, a hardened strategy (more dimensions) for creating my heatmaps (using adjacent frames) would also help. 
+To over come some of the issues described above and improve the pipeline, I think that more training data could help. For example, images if vehicles and non vehicles in inclement weather and night time conditions. Also, a hardened strategy (more dimensions) for creating my heatmaps (using adjacent frames) would also help. 
 
 <strong>Checklist</strong>
 * <del>Perform a Histogram of Oriented Gradients (HOG) feature extraction on a labeled training set of images and train a classifier Linear SVM classifier</del>
