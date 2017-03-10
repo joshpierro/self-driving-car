@@ -27,7 +27,7 @@ non_vehicle_data = utils.load_data(NON_VEHICLE_IMAGES<br>
 </pre>
 
 <strong>Sample of vehicle and non-vehicle training data</strong>
-<img src='https://github.com/joshpierro/self-driving-car/blob/master/p/output_images/car_not_car.png'>
+<img src='https://github.com/joshpierro/self-driving-car/blob/master/p5/output_images/car_not_car.png'>
 
 ####2. Explain how (and identify where in your code) you extracted HOG features from the training images.
 
@@ -63,7 +63,7 @@ This calls the function 'extract_features' which can be found on lines 164-214 i
 
 To get a feel for training image HOGs, I played around a bit with the 'get_hog_features' function (lines 44-61) in the utils.py script. My main focus at this point was, however, to get the feature extraction working and I didn't really tune my parameters until I my classifier was trained and I started making predictions. The image below shows a training image and its HOG, with my final parameters, which I discuss in the next section. 
 
-<img src='https://github.com/joshpierro/self-driving-car/blob/master/p/output_images/hog_exploration.png'>
+<img src='https://github.com/joshpierro/self-driving-car/blob/master/p5/output_images/hog_exploration.png'>
 
 
 ####3. Explain how you settled on your final choice of HOG parameters.
@@ -80,7 +80,7 @@ HOG_CHANNEL = 0 #Y <br>
 
 I chose a linear SVM based on the advice in the lectures, and used HOG, spatial and histogram features. I also made sure I split the traing/test data (80%/20%) before training. Once my paramters were reigned in, I was able to consitently get around 98% accuracy in my predictions with my test data. This feature can be found in lines 71-101 in app.py. 
 
-<img src='https://github.com/joshpierro/self-driving-car/blob/master/p/output_images/training.png'>
+<img src='https://github.com/joshpierro/self-driving-car/blob/master/p5/output_images/training.png'>
 
 
 ###Sliding Window Search
