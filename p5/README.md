@@ -111,7 +111,7 @@ It can also be found in the root of this repo project_results.mp4
 
 ####2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
-In lines 146-155 of app.py I implement a thresholded heatmap to identify and and label vehicle positions. This was my main strategy for reducing false positives. I then constructed bounding boxes to cover the area of each blob detected. A richer strategy might include aggregating the results from adjacent frames in the video and set a threshold on that. This would certainly cull out more anomalies. 
+In lines 146-155 of app.py I implement a thresholded heatmap to identify and and label vehicle positions. This was my main strategy for reducing false positives. I then constructed bounding boxes to cover the area of each hot spot detected. A richer strategy might include aggregating the results from adjacent frames in the video and set a threshold on that. This would certainly cull out more anomalies. 
 
 ---
 
