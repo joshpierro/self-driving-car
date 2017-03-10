@@ -4,11 +4,11 @@ This repo contains my submission for the <strong>Vehicle Detection Project</stro
 
 [//]: # (Image References)
 [point1]: output_images/car_not_car.png "training data sample"
+[point2]: output_images/hog_exploration.png "Car HOG"
+[point3]: output_images/training.png "Training Results"
+[point4]: output_images/window.png "Window Grid"
+[point5]: output_images/pipe.png "Pipeline output"
 
-[point2]: output_images/point2.png "Undistorted Image"
-[point3]: output_images/point3.png "Perspective Transform"
-[point4]: output_images/point4.png "Threshold/Binary image"
-[point5]: output_images/point5.png "Histogram"
 [point5_1]: output_images/point5_1.png "Sliding Window"
 [point6]: output_images/point6.png "Final Result"
 [bad_result]: output_images/bad_result.png "Bad results"
@@ -87,40 +87,36 @@ I chose a linear SVM based on the advice in the lectures, and used HOG, spatial 
 
 ####1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
-I decided to search random window positions at random scales all over the image and came up with this (ok just kidding I didn't actually ;):
+I found that my sliding window strategy was probably the most critical piece of the pipeline. My implementation was inspired by the lectures, but trial and error (and lots of failure) drove the final scales and properties of the windows. My solution consists of two layers of windows, one 64x64 px and one 128x128px. These two grids were slightly staggered on the x axis and both overlapped 90%. Lines 115-121 in app.py define the sliding windows. 
 
-![alt text][image3]
+<pre>
+windows_64 = utils.slide_window(image, x_start_stop=[None, None], y_start_stop=[375, 430],<br>
+                    xy_window=(64, 64), xy_overlap=(0.9, 0.9))<br>
+
+windows_128 = utils.slide_window(image, x_start_stop=[70, None], y_start_stop=[375, 560],<br>
+                    xy_window=(128, 128), xy_overlap=(0.9, 0.9))<br>
+
+windows = windows_64 + windows_128
+<pre>
+
+<img src='https://github.com/joshpierro/self-driving-car/blob/master/p5/output_images/windows.png'>
 
 ####2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
-Ultimately I searched on two scales using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:
+I used the Y channed of the YUV color space, as well as spatially binned color and histograms of color when extracting my HOG features. Again, the sliding window size, overlap and placement made a tremendious difference. Finally, playing with the threshold to prevent false positives was helpful. Select images from my pipeline can be found below. 
 
-![alt text][image4]
----
+<img src='https://github.com/joshpierro/self-driving-car/blob/master/p5/output_images/pipe.png'>
 
 ### Video Implementation
 
 ####1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)
-Here's a [link to my video result](./project_video.mp4)
 
+Here's a link to my final video: 
+It can also be found in the root of this repo project_results.mp4
 
 ####2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
-I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
-
-Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
-
-### Here are six frames and their corresponding heatmaps:
-
-![alt text][image5]
-
-### Here is the output of `scipy.ndimage.measurements.label()` on the integrated heatmap from all six frames:
-![alt text][image6]
-
-### Here the resulting bounding boxes are drawn onto the last frame in the series:
-![alt text][image7]
-
-
+In lines 146-155 of app.py I implement a thresholded heatmap to identify and and label vehicle positions. This was my main strategy for reducing false positives. I then constructed bounding boxes to cover the area of each blob detected. A richer strategy might include aggregating the results from adjacent frames in the video and set a threshold on that. This would certainly cull out more anomolies. 
 
 ---
 
@@ -128,7 +124,13 @@ Here's an example result showing the heatmap from a series of frames of video, t
 
 ####1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+Again, I was pleasantly suprised that the classroom materials aligned so closely with this exercise and if you followed them you could get 80% of an end to end solution. That said, there were lots of stumbling blocks along the way, lots of trial and error was needed to get it working and my solution is far from perfect. 
+
+Specifically, some of the issues I had include, but were not limited to; selecting the right training data, scaling my images and implementing the HOG extractions for the first time. 
+
+Situations where my pipeline might fail, include, but are not limited to: night time driving, inclimate weather, different driving conditions (super urban,super rural), switching lanes and objects unknown to the classifier, like a motorcyle, cyclist or cow crossing the road. 
+
+To over come some of the issues described above, I think that more training data could help. For example, images if vehicles and non vehicles in inclimate weather and night time conditions. Also, a hardened strategy (more dimensions) for creating my heatmaps (using adjacent frames) would also help. 
 
 <strong>Checklist</strong>
 * <del>Perform a Histogram of Oriented Gradients (HOG) feature extraction on a labeled training set of images and train a classifier Linear SVM classifier</del>
