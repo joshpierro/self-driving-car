@@ -100,46 +100,33 @@ print('For these', n_predict, 'labels: ', y_test[0:n_predict])
 t2 = time.time()
 print(round(t2 - t, 5), 'Seconds to predict', n_predict, 'labels with SVC')
 
-#save svc
+#save svc - saves some training time
 #joblib.dump(svc, 'svc.pkl')
 #load model
 # svc = joblib.load('svc.pkl')
 # print('loading')
 
-image = mpimg.imread('/home/pierro/Work/udacity/self-driving-car/p5/test_images/test5.jpg')
+#test image
+image = mpimg.imread('/home/pierro/Work/udacity/self-driving-car/p5/test_images/test1.jpg')
 image = image.astype(np.float32)/255
 draw_image = np.copy(image)
 
-#
-# windows = utils.slide_window(image, x_start_stop=[None,None], y_start_stop=[400,550],
-#                     xy_window=(32, 32), xy_overlap=(0.5, 0.5))
-# windows = utils.slide_window(image, x_start_stop=[None,None], y_start_stop=[400,550],
-#                     xy_window=(32,32), xy_overlap=(0.5, 0.5))
-# windows_32 = utils.slide_window(image, x_start_stop=[None,None], y_start_stop=[400,500],
-#                     xy_window=(32,32), xy_overlap=(0.5, 0.5))
-
-# windows_64 = utils.slide_window(image, x_start_stop=[None,None], y_start_stop=[400,500],
-#                     xy_window=(64,64), xy_overlap=(0.5, 0.5))
-#
-# windows_96 = utils.slide_window(image, x_start_stop=[None,None], y_start_stop=[400,500],
-#                     xy_window=(96, 96), xy_overlap=(0.8, 0.8))
-#
-# windows_128 = utils.slide_window(image, x_start_stop=[None,None], y_start_stop=[450,600],
-#                     xy_window=(96, 96), xy_overlap=(0.8, 0.8))
-#
-# windows = windows_64 + windows_96 + windows_128
-
-windows_1 = utils.slide_window(image, x_start_stop=[690, None], y_start_stop=[375, 430],
+#sliding window implementation
+windows_64 = utils.slide_window(image, x_start_stop=[None, None], y_start_stop=[375, 430],
                     xy_window=(64, 64), xy_overlap=(0.9, 0.9))
 
-windows_2 = utils.slide_window(image, x_start_stop=[760, None], y_start_stop=[375, 560],
+windows_128 = utils.slide_window(image, x_start_stop=[70, None], y_start_stop=[375, 560],
                     xy_window=(128, 128), xy_overlap=(0.9, 0.9))
-windows = windows_1 + windows_2
-# windows += utils.slide_window(image, x_start_stop=[None,None], y_start_stop=[450,650],
-#                     xy_window=(128, 128), xy_overlap=(0.5, 0.5))
 
+windows = windows_64 + windows_128
 
+#test sliding Windows
+# sliding_windows = utils.draw_boxes(draw_image, windows, color=(0, 0, 255), thick=6)
+# plt.imshow(sliding_windows)
+# plt.xlabel('windows')
+# plt.show(block=True)
 
+print('processing video')
 
 def pipeline(video):
     video = video.astype(np.float32) / 255
@@ -159,52 +146,47 @@ def pipeline(video):
     heat = np.zeros_like(video[:, :, 0]).astype(np.float)
     utils.add_heat(heat,hot_windows)
     # Apply threshold to help remove false positives
-    heat = utils.apply_threshold(heat, 1)
+    heat = utils.apply_threshold(heat, 2)
     # Visualize the heatmap when displaying
     heatmap = np.clip(heat, 0, 255)
     # Find final boxes from heatmap using label function
     labels = label(heatmap)
-
-    w = utils.draw_boxes(draw_image, hot_windows, color=(0, 0, 255), thick=6)
+    #draw hotspots on vid
     h = utils.draw_labeled_bboxes(np.copy(video), labels)
+    #scale back up
     h = h.astype(np.float32) * 255
     return h
 
-video_path = 'project_video.mp4'
+
+video_path = 'test_video.mp4'
 video_output = 'project_result.mp4'
 output = VideoFileClip(video_path)
 input = output.fl_image(pipeline)
 input.write_videofile(video_output, audio=False)
 
-# windows,heatmap  = pipeline(image)
-#
-# plt.figure(figsize=(10,5))
-# plt.subplot(1, 2, 1)
-# plt.imshow(windows)
-# plt.xlabel('Overlapping Boxes')
-#
-# plt.subplot(1, 2, 2)
-# plt.imshow(heatmap)
-# plt.xlabel('Corrected Boxes')
-# plt.show(block=True)
-
-
-# plt.imshow(heatmap)
-# plt.xlabel('windows')
-# plt.show(block=True)
-
+print('end')
 #vehicle_data = vehicle_data[0:100]
 # car = mpimg.imread(vehicle_data[0])
 # img = (car*255).astype(np.uint8)
 #
 # x,s= hog(img[:,:,0], orientations=9, pixels_per_cell=(8, 8),
 #                     cells_per_block=(2, 2), visualise=True)
-# Define the labels vector
-# y = np.hstack((np.ones(len(car_features)), np.zeros(len(notcar_features))))
-# plt.imshow(s)
-# plt.xlabel('HOG')
+# heatmap  = pipeline(image)
+#
+# image2 = mpimg.imread('/home/pierro/Work/udacity/self-driving-car/p5/test_images/test6.jpg')
+# image2 = image2.astype(np.float32)/255
+# draw_image2 = np.copy(image2)
+# heatmap2  = pipeline(image2)
+#
+# plt.figure(figsize=(10,5))
+# plt.subplot(1, 2, 1)
+# plt.imshow(heatmap)
+# plt.xlabel('figure 1')
+#
+# plt.subplot(1, 2, 2)
+# plt.imshow(heatmap2)
+# plt.xlabel('figure 2')
 # plt.show(block=True)
 
-print('end')
 
 
