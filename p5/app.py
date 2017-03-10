@@ -55,9 +55,9 @@ t2 = time.time()
 print(round(t2-t, 2), 'Seconds to extract HOG features...')
 
 #get a feel for HOGs
-vehicle_data = utils.load_data(VEHICLE_IMAGES)
-v = plt.imread(vehicle_data[999])
-f,hi = utils.get_hog_features(v[:,:,0], utils.ORIENT, utils.PX_PER_CELL, utils.CELL_PER_BLOCK,vis=True, feature_vec=True)
+# vehicle_data = utils.load_data(VEHICLE_IMAGES)
+# v = plt.imread(vehicle_data[999])
+# f,hi = utils.get_hog_features(v[:,:,0], utils.ORIENT, utils.PX_PER_CELL, utils.CELL_PER_BLOCK,vis=True, feature_vec=True)
 
 # plt.figure(figsize=(10,5))
 # plt.subplot(1, 2, 1)
@@ -158,7 +158,7 @@ def pipeline(video):
     return h
 
 
-video_path = 'test_video.mp4'
+video_path = 'project_video.mp4'
 video_output = 'project_result.mp4'
 output = VideoFileClip(video_path)
 input = output.fl_image(pipeline)
