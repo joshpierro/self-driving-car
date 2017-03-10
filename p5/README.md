@@ -1,54 +1,87 @@
 **Vehicle Detection Project**
 
-This repo contains my submission for the <strong>Vehicle Detection Project</strong>, and this readme describes my approach and its components. All of the code that defines and trains my classifier, as well as defines and executes my pipeline, is found in app.py. Much of the logic used for loading and processing data was deligated to the utils.py file. The subsequent sections outline how these components fulfill the requirements defined in the project <a href='https://review.udacity.com/#!/rubrics/513/view' target='_blank'>rubric</a>.
+This repo contains my submission for the <strong>Vehicle Detection Project</strong>, and this readme describes my approach and the application components. All of the code that defines and trains my classifier, as well as defines and executes my pipeline, is found in app.py. Much of the logic used for loading and processing data was deligated to the utils.py file. The subsequent sections outline how these components fulfill the requirements defined in the project <a href='https://review.udacity.com/#!/rubrics/513/view' target='_blank'>rubric</a>.
 
 [//]: # (Image References)
-[image1]: ./examples/car_not_car.png
-[image2]: ./examples/HOG_example.jpg
-[image3]: ./examples/sliding_windows.jpg
-[image4]: ./examples/sliding_window.jpg
-[image5]: ./examples/bboxes_and_heat.png
-[image6]: ./examples/labels_map.png
-[image7]: ./examples/output_bboxes.png
-[video1]: ./project_video.mp4
+[point1]: output_images/car_not_car.png "training data sample"
 
+[point2]: output_images/point2.png "Undistorted Image"
+[point3]: output_images/point3.png "Perspective Transform"
+[point4]: output_images/point4.png "Threshold/Binary image"
+[point5]: output_images/point5.png "Histogram"
+[point5_1]: output_images/point5_1.png "Sliding Window"
+[point6]: output_images/point6.png "Final Result"
+[bad_result]: output_images/bad_result.png "Bad results"
 
-
-
-## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
-###Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
-
----
-###Writeup / README
-
-####1. Provide a Writeup / README that includes all the rubric points and how you addressed each one.  You can submit your writeup as markdown or pdf.  [Here](https://github.com/udacity/CarND-Vehicle-Detection/blob/master/writeup_template.md) is a template writeup for this project you can use as a guide and a starting point.  
-
-You're reading it!
 
 ###Histogram of Oriented Gradients (HOG)
+####1. Data
+My first step was to choose and load training my data. Ultimately, I chose to only use the KITTI vision benchmark suite for vehicle data in addition to the the entire non-vehicle dataset. More discussion of my data choice can be found in the following sections, and the code to load my training data can be found on lines 24-25 in app.py. 
+<pre>
+VEHICLE_IMAGES = 'data/vehicles/**/*.png'<br>
+NON_VEHICLE_IMAGES = 'data/non-vehicles/**/*.png'<br>
+<br>
+#load data<br>
+vehicle_data = utils.load_data(VEHICLE_IMAGES)<br>
+non_vehicle_data = utils.load_data(NON_VEHICLE_IMAGES<br>
+</pre>
 
-####1. Explain how (and identify where in your code) you extracted HOG features from the training images.
+<strong>Sample of vehicle and non-vehicle training data</strong>
+<img src='https://github.com/joshpierro/self-driving-car/blob/master/p/output_images/car_not_car.png'>
 
-The code for this step is contained in the first code cell of the IPython notebook (or in lines # through # of the file called `some_file.py`).  
+####2. Explain how (and identify where in your code) you extracted HOG features from the training images.
 
-I started by reading in all the `vehicle` and `non-vehicle` images.  Here is an example of one of each of the `vehicle` and `non-vehicle` classes:
+I extract the training data from the training images in lines 31-53 in app.py.
 
-![alt text][image1]
+<pre>
+vehicle_features = utils.extract_features(vehicle_data,
+                                          color_space=utils.COLORSPACE,
+                                          spatial_size=utils.SPATIAL_SIZE,
+                                          hist_bins=utils.HIST_BINS,
+                                          orient=utils.ORIENT,
+                                          pix_per_cell=utils.PX_PER_CELL,
+                                          cell_per_block=utils.CELL_PER_BLOCK,
+                                          hog_channel=utils.HOG_CHANNEL,
+                                          spatial_feat=utils.SPATIAL_FEATURES,
+                                          hist_feat=utils.HIST_FEATURES,
+                                          hog_feat=utils.HOG_FEATURES)
 
-I then explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  I grabbed random images from each of the two classes and displayed them to get a feel for what the `skimage.hog()` output looks like.
+non_vehicle_features = utils.extract_features(non_vehicle_data,
+                                          color_space=utils.COLORSPACE,
+                                          spatial_size=utils.SPATIAL_SIZE,
+                                          hist_bins=utils.HIST_BINS,
+                                          orient=utils.ORIENT,
+                                          pix_per_cell=utils.PX_PER_CELL,
+                                          cell_per_block=utils.CELL_PER_BLOCK,
+                                          hog_channel=utils.HOG_CHANNEL,
+                                          spatial_feat=utils.SPATIAL_FEATURES,
+                                          hist_feat=utils.HIST_FEATURES,
+                                          hog_feat=utils.HOG_FEATURES)
+</pre>
 
-Here is an example using the `YCrCb` color space and HOG parameters of `orientations=8`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
+This calls the function 'extract_features' which can be found on lines 164-214 in the utils script. This function, as well as most others in this exercise were taken from the lessons.   
+
+To get a feel for training image HOGs, I played around a bit with the 'get_hog_features' function (lines 44-61) in the utils.py script. My main focus at this point was, however, to get the feature extraction working and I didn't really tune my parameters until I my classifier was trained and I started making predictions. The image below shows a training image and its HOG, with my final parameters, which I discuss in the next section. 
+
+<img src='https://github.com/joshpierro/self-driving-car/blob/master/p/output_images/hog_exploration.png'>
 
 
-![alt text][image2]
+####3. Explain how you settled on your final choice of HOG parameters.
+I explored many different combinations of colorspaces and HOG parameters. In the end, my final configuration was based on two things; accuracy of my classifier and the final performance on the test images, test video and project video. I ended using The following parameters:
+<pre>
+COLORSPACE = 'YUV' <br>
+ORIENT = 9 <br>
+PX_PER_CELL = 8 <br>
+CELL_PER_BLOCK = 2 <br>
+HOG_CHANNEL = 0 #Y <br>
+</pre>
 
-####2. Explain how you settled on your final choice of HOG parameters.
+####4. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
-I tried various combinations of parameters and...
+I chose a linear SVM based on the advice in the lectures, and used HOG, spatial and histogram features. I also made sure I split the traing/test data (80%/20%) before training. Once my paramters were reigned in, I was able to consitently get around 98% accuracy in my predictions with my test data. This feature can be found in lines 71-101 in app.py. 
 
-####3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
+<img src='https://github.com/joshpierro/self-driving-car/blob/master/p/output_images/training.png'>
 
-I trained a linear SVM using...
 
 ###Sliding Window Search
 
