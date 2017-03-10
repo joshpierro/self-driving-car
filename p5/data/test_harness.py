@@ -13,14 +13,23 @@ import numpy as np
 VEHICLE_IMAGES = 'data/vehicles/**/*.png'
 NON_VEHICLE_IMAGES = 'data/non-vehicles/**/*.png'
 
-print(np.any(np.isnan(['ss'])))
-
-
-
-# #load data
+#load data
 # vehicle_data = utils.load_data(VEHICLE_IMAGES)
 # non_vehicle_data = utils.load_data(NON_VEHICLE_IMAGES)
+# v = plt.imread(vehicle_data[999])
+# n = plt.imread(non_vehicle_data[999])
 #
+# plt.figure(figsize=(10,5))
+# plt.subplot(1, 2, 1)
+# plt.imshow(v)
+# plt.xlabel('Vehicle')
+#
+# plt.subplot(1, 2, 2)
+# plt.imshow(n)
+# plt.xlabel('non-Vehicle')
+# plt.show(block=True)
+
+
 # # vehicle_data = vehicle_data[0:100]
 # # non_vehicle_data = non_vehicle_data[0:100]
 #

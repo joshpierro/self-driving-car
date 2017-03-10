@@ -27,9 +27,6 @@ non_vehicle_data = utils.load_data(NON_VEHICLE_IMAGES)
 print('loaded vehicle images')
 print('loaded non vehicle images')
 
-# vehicle_data = vehicle_data[0:122]
-# non_vehicle_data = vehicle_data[0:500]
-
 t = time.time()
 vehicle_features = utils.extract_features(vehicle_data,
                                           color_space=utils.COLORSPACE,
@@ -57,9 +54,20 @@ non_vehicle_features = utils.extract_features(non_vehicle_data,
 t2 = time.time()
 print(round(t2-t, 2), 'Seconds to extract HOG features...')
 
-# # print(np.any(np.isnan(vehicle_features)))
-# vehicle_features = vehicle_features[np.logical_not(np.isnan(vehicle_features))]
+#get a feel for HOGs
+vehicle_data = utils.load_data(VEHICLE_IMAGES)
+v = plt.imread(vehicle_data[999])
+f,hi = utils.get_hog_features(v[:,:,0], utils.ORIENT, utils.PX_PER_CELL, utils.CELL_PER_BLOCK,vis=True, feature_vec=True)
 
+# plt.figure(figsize=(10,5))
+# plt.subplot(1, 2, 1)
+# plt.imshow(v)
+# plt.xlabel('Vehicle')
+#
+# plt.subplot(1, 2, 2)
+# plt.imshow(hi)
+# plt.xlabel('Vehicle HOG')
+# plt.show(block=True)
 
 # Create an array stack of feature vectors
 X = np.vstack((vehicle_features, non_vehicle_features)).astype(np.float64)
@@ -67,17 +75,14 @@ X = np.vstack((vehicle_features, non_vehicle_features)).astype(np.float64)
 X_scaler = StandardScaler().fit(X)
 # Apply the scaler to X
 scaled_X = X_scaler.transform(X)
-
 # Define the labels vector
 y = np.hstack((np.ones(len(vehicle_features)), np.zeros(len(non_vehicle_features))))
-
 
 # Split up data into randomized training and test sets
 rand_state = np.random.randint(0, 100)
 X_train, X_test, y_train, y_test = train_test_split(
     scaled_X, y, test_size=0.2, random_state=rand_state)
 
-#TODO UNCOMMENT ME
 # # Use a linear SVC
 svc = LinearSVC()
 # Check the training time for the SVC
@@ -97,9 +102,7 @@ print(round(t2 - t, 5), 'Seconds to predict', n_predict, 'labels with SVC')
 
 #save svc
 #joblib.dump(svc, 'svc.pkl')
-
 #load model
-
 # svc = joblib.load('svc.pkl')
 # print('loading')
 
