@@ -276,6 +276,7 @@ def add_heat(heatmap, bbox_list):
         # Add += 1 for all pixels inside each bbox
         # Assuming each "box" takes the form ((x1, y1), (x2, y2))
         heatmap[box[0][1]:box[1][1], box[0][0]:box[1][0]] += 1
+    return heatmap
 
 def apply_threshold(heatmap, threshold):
     # Zero out pixels below the threshold
@@ -293,7 +294,13 @@ def draw_labeled_bboxes(img, labels):
         nonzerox = np.array(nonzero[1])
         # Define a bounding box based on min/max x and y
         bbox = ((np.min(nonzerox), np.min(nonzeroy)), (np.max(nonzerox), np.max(nonzeroy)))
+
+        width = np.subtract(bbox[0][0],bbox[0][1])
+        height = np.subtract(bbox[1][0],bbox[1][1])
+
         # Draw the box on the image
-        cv2.rectangle(img, bbox[0], bbox[1], (0,0,255), 6)
+        if height>400 and width>400:
+            cv2.rectangle(img, bbox[0], bbox[1], (0,0,255), 6)
+
     # Return the image
     return img

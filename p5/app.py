@@ -1,5 +1,6 @@
 import time
 
+from collections import deque
 import imageio
 from moviepy.video.io.VideoFileClip import VideoFileClip
 from sklearn.externals import joblib
@@ -84,7 +85,7 @@ X_train, X_test, y_train, y_test = train_test_split(
     scaled_X, y, test_size=0.2, random_state=rand_state)
 
 # # Use a linear SVC
-svc = LinearSVC()
+svc = LinearSVC(C=5)
 # Check the training time for the SVC
 t = time.time()
 svc.fit(X_train, y_train)
@@ -127,7 +128,7 @@ windows = windows_64 + windows_128
 # plt.show(block=True)
 
 print('processing video')
-
+d = deque(maxlen=10)
 def pipeline(video):
     video = video.astype(np.float32) / 255
 
@@ -144,13 +145,16 @@ def pipeline(video):
                                        hog_feat=utils.HOG_FEATURES)
 
     heat = np.zeros_like(video[:, :, 0]).astype(np.float)
-    utils.add_heat(heat,hot_windows)
     # Apply threshold to help remove false positives
-    heat = utils.apply_threshold(heat, 2)
+    utils.add_heat(heat,hot_windows)
     # Visualize the heatmap when displaying
     heatmap = np.clip(heat, 0, 255)
     # Find final boxes from heatmap using label function
-    labels = label(heatmap)
+    d.append(heatmap)
+    a = np.average(d,axis=0)
+
+    av_thresh = utils.apply_threshold(a,2)
+    labels = label(av_thresh)
     #draw hotspots on vid
     h = utils.draw_labeled_bboxes(np.copy(video), labels)
     #scale back up
