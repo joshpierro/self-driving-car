@@ -92,7 +92,7 @@ windows_128 = utils.slide_window(image, x_start_stop=[70, None], y_start_stop=[3
                     xy_window=(128, 128), xy_overlap=(0.9, 0.9))<br>
 
 windows = windows_64 + windows_128
-<pre>
+</pre>
 
 <img src='https://github.com/joshpierro/self-driving-car/blob/master/p5/output_images/windows.png'>
 
